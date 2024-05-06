@@ -109,7 +109,5 @@ if __name__=='__main__':
     ratata=Pokemons(2,'Rattata')
     Dan.pokemon_equipe.append(ratata)
     Dan.pokemon_equipe.append(Bulbasaur)
-    
-    
     combat1=p.Combat(Dan,Kabuto)
     combat1.commencer()
