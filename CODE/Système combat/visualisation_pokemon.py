@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import re
 
-data = pd.read_csv('/Users/cleme/Documents/DAN_MONAT_SAMY/data_traité/pokemon_coordonnes_modifie.csv')
+data = pd.read_csv('data_traité/pokemon_coordonnes_modifie.csv')
 
 
 # Définir une fonction pour extraire les coordonnées des chaînes de caractères
@@ -20,35 +20,12 @@ pokemon_coordinates = {}
 for index, row in data.iterrows():
     pokemon_name = row['pokemon']
     pokemon_coord = row['coordinates']
-    pokemon_coordinates[pokemon_name] = pokemon_coord
-
-# Afficher le dictionnaire
-print(pokemon_coordinates)
-# Extraire les coordonnées x et y des données
-x = [coord[0] for coord in data['coordinates']]
-y = [coord[1] for coord in data['coordinates']]
-
-# Créer le quadrillage
-plt.figure(figsize=(20, 5))  # Définir la taille de la figure
-plt.grid(True)                # Activer le quadrillage
-
-# Tracer les points
-plt.scatter(x, y, color='blue')
-
-# Définir les limites du quadrillage
-plt.xlim(0, 4000)
-plt.ylim(0, 1000)
-
-plt.xticks(range(0, 4000, 20))
-plt.yticks(range(0, 1000, 20))
-
-# Afficher le quadrillage
-plt.show()
+    pokemon_coordinates[pokemon_coord] = pokemon_name
 
 
 
 # Charger les données à partir du fichier CSV
-pokemon_data = pd.read_csv('/Users/cleme/Documents/DAN_MONAT_SAMY/data/pokemon_first_gen.csv')
+pokemon_data = pd.read_csv('data/pokemon_first_gen.csv')
 
 # Créer un dictionnaire pour stocker les données de chaque Pokémon
 pokemon_dict = {}
@@ -57,6 +34,7 @@ pokemon_dict = {}
 for index, row in pokemon_data.iterrows():
     pokemon_id = row['Name']
     pokemon_info = {
+        'Numero':row['#'],
         'Name': row['Name'],
         'Type 1': row['Type 1'],
         'Type 2': row['Type 2'],
@@ -68,12 +46,22 @@ for index, row in pokemon_data.iterrows():
         'Sp. Def': row['Sp. Def'],
         'Speed': row['Speed'],
         'Generation': row['Generation'],
-        'Legendary': row['Legendary']
+        'Legendary': row['Legendary'],
+        'Niveau':'',
+        'Evolution':''
     }
     pokemon_dict[pokemon_id] = pokemon_info
+pokemon_dict = {nom: {cle: [valeur, valeur] if cle == 'HP' else valeur for cle, valeur in details.items()} for nom, details in pokemon_dict.items()}
+liste=[20,30,40,20,30,40,20,30,40,20,30,40,20,30,40,20,30,40,20,30,20,30,20,30,20,30,20,30,20,30,40,20,30,40,20,30,20,30,20,30,20,30,20,30,40,20,30,20,30,20,30,20,30,20,30,20,30,20,30,20,30,40,20,30,40,20,30,40,20,30,40,20,30,20,30,40,20,30,20,30,20,30,30,20,30,20,30,20,30,20,30,20,30,40,30,20,30,20,30,20,30,20,30,20,30,30,30,30,20,30,20,30,30,30,30,20,30,20,30,20,30,30,30,30,30,30,30,30,20,30,30,30,20,30,30,30,30,20,30,20,30,30,30,50,50,50,20,30,40,50,50]
+for i, (pokemon, niveau) in enumerate(zip(pokemon_dict.keys(), liste)):
+    pokemon_dict[pokemon]['Niveau'] = niveau
+evolutions_liste = [2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,2,1,0,3,0,3,0,3,0,3,0,3,0,2,1,0,2,1,0,3,0,3,0,3,0,3,0,2,1,0,3,0,3,0,3,0,3,0,3,0,3,0,3,0,2,1,0,2,1,0,2,1,0,2,1,0,3,0,2,1,0,3,0,3,0,3,0,0,3,0,3,0,3,0,3,0,2,1,0,0,3,0,3,0,3,0,3,0,3,0,0,0,0,0,3,0,3,0,0,0,0,3,0,3,0,3,0,0,0,0,0,0,0,0,3,0,0,0,3,0,0,0,0,3,0,3,0,0,0,0,0,0,2,1,0,0,0]
 
-# Afficher le dictionnaire
-print(pokemon_dict)
+for i, (pokemon, evolution) in enumerate(zip(pokemon_dict.keys(), evolutions_liste)):
+    pokemon_dict[pokemon]['Evolution'] = evolution
+
+
+
 
 
 attaques_speciales_par_pokemon = {
@@ -238,4 +226,129 @@ for pokemon, attaque in attaques_speciales_par_pokemon.items():
     pokemon_dict[pokemon]["attaque_speciale"] = attaque["attaque"]
     pokemon_dict[pokemon]["puissance"] = attaque["puissance"]
 
-print(pokemon_dict)
+
+
+pokemons_liste = [
+    "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
+    "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
+    "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata",
+    "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu",
+    "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina", "Nidoqueen", "Nidoran♂",
+    "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales",
+    "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume",
+    "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth",
+    "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine",
+    "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
+    "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool",
+    "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke",
+    "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel",
+    "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter",
+    "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode",
+    "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan",
+    "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela",
+    "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie",
+    "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros",
+    "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon",
+    "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl",
+    "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite",
+    "Mewtwo", "Mew"
+]
+
+exp_niveau_pokemon = {
+    0: 1,
+    100: 2,
+    300: 3,
+    600: 4,
+    1000: 5,
+    1500: 6,
+    2100: 7,
+    2800: 8,
+    3600: 9,
+    4500: 10,
+    5500: 11,
+    6600: 12,
+    7800: 13,
+    9100: 14,
+    10500: 15,
+    12000: 16,
+    13600: 17,
+    15300: 18,
+    17100: 19,
+    19000: 20,
+    21000: 21,
+    23100: 22,
+    25300: 23,
+    27600: 24,
+    30000: 25,
+    32500: 26,
+    35100: 27,
+    37800: 28,
+    40600: 29,
+    43500: 30
+}
+
+exp_necessaire_par_niveau = [
+    0,    # Niveau 1
+    100,  # Niveau 2
+    300,  # Niveau 3
+    600,  # Niveau 4
+    1000, # Niveau 5
+    1500, # Niveau 6
+    2100, # Niveau 7
+    2800, # Niveau 8
+    3600, # Niveau 9
+    4500, # Niveau 10
+    5500, # Niveau 11
+    6600, # Niveau 12
+    7800, # Niveau 13
+    9100, # Niveau 14
+    10500,# Niveau 15
+    12000,# Niveau 16
+    13600,# Niveau 17
+    15300,# Niveau 18
+    17100,# Niveau 19
+    19000,# Niveau 20
+    21000,# Niveau 21
+    23100,# Niveau 22
+    25300,# Niveau 23
+    27600,# Niveau 24
+    30000,# Niveau 25
+    32500,# Niveau 26
+    35100,# Niveau 27
+    37800,# Niveau 28
+    40600,# Niveau 29
+    43500 
+]
+
+exp_gagne_par_niveau = {
+    1: 50,
+    2: 100,
+    3: 150,
+    4: 200,
+    5: 250,
+    6: 300,
+    7: 350,
+    8: 400,
+    9: 450,
+    10: 500,
+    11: 550,
+    12: 600,
+    13: 650,
+    14: 700,
+    15: 750,
+    16: 800,
+    17: 850,
+    18: 900,
+    19: 950,
+    20: 1000,
+    21: 1050,
+    22: 1100,
+    23: 1150,
+    24: 1200,
+    25: 1250,
+    26: 1300,
+    27: 1350,
+    28: 1400,
+    29: 1450,
+    30: 1500
+}
