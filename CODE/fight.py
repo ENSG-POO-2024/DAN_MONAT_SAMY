@@ -11,7 +11,7 @@ import random as rd
 import math
 import copy
 import time
-from inventaireui import Ui_Form2
+from inventaireUI import Ui_Form2
 
 from abc import abstractmethod, ABCMeta
 import visualisation_pokemon as vp
@@ -133,20 +133,7 @@ class Combat:
 
             return True
 
-    def combat_gagné(self):#c'est bon
-         exp=vp.exp_gagne_par_niveau[self.pokemon_adversaire.niveau]
-
-         self.joueur.pokemon_equipe[self.indice].monter_niveau(int(exp))
-
-         n=len(self.joueur.pokemon_equipe)
-
-         for i in range(0,n):
-
-             if i != self.indice :
-
-                 self.joueur.pokemon_equipe[i].monter_niveau(math.floor(int(exp)/(n-1)))
-
-         self.joueur.ajouter_pokemon_equipe(self.pokemon_adversaire)
+    
 
     def fuir(self):#c'est bon
         """
@@ -226,53 +213,6 @@ class Combat:
                 return True
             return False
 
-
-
-    def changer_pokemon(self):
-
-        """
-
-        Permet au joueur de changer de Pokémon pendant le combat.
-
-
-
-        Returns:
-
-        -------
-
-        bool
-
-            True si le joueur a changé de Pokémon, False sinon.
-
-        """
-
-        print("Choisissez un Pokémon pour le remplacer dans le combat :")
-
-        for i, pokemon in enumerate(self.joueur.pokemon_equipe):
-
-            print(f"{i+1}. {pokemon.name}")
-
-
-
-        choix = input("Entrez le numéro du Pokémon choisi ou 0 pour annuler : ")
-
-        while choix not in [str(i) for i in range(len(self.joueur.pokemon_equipe) + 1)] or self.joueur.pokemon_equipe[int(choix) - 1].est_ko():
-
-            print("Choix invalide. Veuillez entrer un numéro valide ou un pokemon vivant .")
-
-            choix = input("Entrez le numéro du Pokémon choisi ou 0 pour annuler : ")
-
-
-
-        if choix == "0":
-
-            return False
-
-        else:
-
-            self.indice = int(choix) - 1
-
-            return True
 
 class Pokemons(metaclass=ABCMeta):
     """
@@ -506,7 +446,7 @@ class Dresseur:
         Soins(self)
         return True 
 
-    def ajouter_pokemon_equipe(self, pokemon):
+    def ajouter_pokemon_equipe(self, pokemon,indice):
         """
         Ajoute un Pokémon à l'équipe du joueur.
 
@@ -525,11 +465,8 @@ class Dresseur:
             print(f"{self.name} a capturé {pokemon.name}.")
         else:
             print("L'équipe est déjà complète, vous devez retirer un Pokémon avant d'en ajouter un autre.")
-            choix = input("Tapez 1 pour éffectuer l'échange sinon 0 pour conserver l'équipe: ")
-            if choix == 1:
-                choix_pokemon = input("Taper le numéro du pokemon que vous voulez retirer:")
-                self.retirer_pokemon_equipe(self.pokemon_equipe[int(choix_pokemon) - 1])
-                self.ajouter_pokemon_equipe(pokemon)
+            self.retirer_pokemon_equipe(self.pokemon_equipe[indice])
+            self.ajouter_pokemon_equipe(pokemon,indice)
 
     def retirer_pokemon_equipe(self, pokemon):
         """
@@ -673,11 +610,13 @@ class FightWindow(QDialog):
         #self.ui.pushButton_4.setEnabled(False)
         self.ui.pushButton.clicked.connect(self.on_button_click)
         self.ui.pushButton_2.clicked.connect(self.on_button_click)
-        
+        self.ui.pushButton_4.clicked.connect(self.on_button_click)
         self.combat_timer = QTimer(self)
         self.combat_timer.timeout.connect(self.round)
        # self.combat_timer.start(15000)  # 15 secondes par tour de combat
 
+    def progressbar(self,value):
+        self.ui.progressBar_adv.setValue(value)
 
     def on_button_click(self):
         # Redémarrez le timer lorsqu'un bouton est cliqué
@@ -705,8 +644,13 @@ class FightWindow(QDialog):
         # Code pour l'action de la deuxième attaque spéciale
         
         if self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['Speed'] >= self.cb.combat.pokemon_adversaire.stats['Speed']:
-
             self.set_dialogue_text("Vous avez été plus rapide!",temps=0.5)
+            self.set_dialogue_text("Votre Pokémon utilise Attaque spe!")
+            deg=self.cb.combat.attaque_spe()
+            self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
+            self.defendre()
+
+            
     
         else:
             self.defendre()
@@ -751,7 +695,7 @@ class FightWindow(QDialog):
        
     def defendre(self):
         if self.cb.combat.fuir_adv():
-            self.set_dialogue_text(f"Le {self.cb.pokemon_adversaire.name} sauvage a pris la fuite !",0.5)
+            self.set_dialogue_text(f"Le {self.cb.combat.pokemon_adversaire.name} sauvage a pris la fuite !",0.5)
             QMessageBox.information(self, "", f"Le {self.cb.combat.pokemon_adversaire.name} sauvage a pris la fuite !")
             self.close()
             return True
@@ -776,16 +720,20 @@ class FightWindow(QDialog):
         self.ui.pushButton_2.setEnabled(True)
         self.ui.pushButton_3.setEnabled(True)
         self.ui.pushButton_4.setEnabled(True)
-        print(self.cb.combat.pokemon_adversaire.stats['HP'][0])
+        
+        
+        if self.cb.combat.est_mort():
+              self.ui.pushButton.setEnabled(False)
+              self.ui.pushButton_2.setEnabled(False)
+              self.set_dialogue_text(f"Votre pokemon est mort, veuillez changer de pokemon !",temps=1)
 
-        if self.cb.combat.pokemon_adversaire.est_ko():
+        elif self.cb.combat.pokemon_adversaire.est_ko():
             self.set_dialogue_text(f"{self.cb.combat.pokemon_adversaire.name} est KO !\n next..")
             self.ui.progressBar_adv.setValue(self.cb.combat.pokemon_adversaire.stats['HP'][0])
             self.set_dialogue_text(f"Vous avez gagné !\n next..",temps=1)
             QMessageBox.information(self, "", "Vous avez gagné !\n next..")
             
-            self.cb.combat.combat_gagné()
-            print("Vous avez perdu !")
+            self.combat_gagné()
             self.close()
             
 
@@ -805,31 +753,35 @@ class FightWindow(QDialog):
         pokemon_list= self.dresseur.pokemon_equipe
         for pokemon in pokemon_list:
             pokemon_nom.append(df.loc[df['Name'] == pokemon.name, '#'].values[0])
-            
-            
-        print(pokemon_nom)
         
         inventaire = Inventaire(pokemon_nom)
         inventaire.exec_()
         self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
         
-        # Code pour changer de Pokémon
-        #if self
-        #print("Choisissez un Pokémon pour le remplacer dans le combat :")
-        #for i, pokemon in enumerate(self.joueur.pokemon_equipe):
-        #    print(f"{i+1}. {pokemon.name}")
-        #choix = input("Entrez le numéro du Pokémon choisi ou 0 pour annuler : ")
-        #while choix not in [str(i) for i in range(len(self.joueur.pokemon_equipe) + 1)] \
-        #        or self.joueur.pokemon_equipe[int(choix) - 1].est_ko():
-        #    print("Choix invalide. Veuillez entrer un numéro valide ou un pokemon vivant .")
-        #    choix = input("Entrez le numéro du Pokémon choisi ou 0 pour annuler : ")
-        #if choix == "0":
-        #    return False
-        #else:
-        #    self.indice = int(choix) - 1
-        #    return True
-        #self.set_dialogue_text("Changement de Pokémon")
+        self.cb.combat.indice=inventaire.index
+        
+    def combat_gagné(self):#c'est bon
+         exp=vp.exp_gagne_par_niveau[self.cb.combat.pokemon_adversaire.niveau]
 
+         self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].monter_niveau(int(exp))
+
+         n=len(self.cb.combat.joueur.pokemon_equipe)
+
+         for i in range(0,n):
+
+             if i != self.cb.combat.indice :
+
+                 self.cb.combat.joueur.pokemon_equipe[i].monter_niveau(math.floor(int(exp)/(n-1)))
+                 
+         if n < 6 :
+             self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
+
+         else :
+             print("L'équipe est déjà complète, vous devez retirer un Pokémon avant d'en ajouter un autre.")
+             
+             self.changer_pokemon()
+             self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
+             
 
 
 
@@ -858,8 +810,7 @@ class Inventaire(QDialog):
         self.ui.setupUi(self)
         
         self.pokemon_liste=pokemon_liste
-        
-        
+        self.index=0
         
         self.poke_img_1.clear()
         self.poke_img_2.clear()
@@ -889,18 +840,17 @@ class Inventaire(QDialog):
         
     def on_pokemon_clicked(self, index):
         # Lorsque vous cliquez sur une image de Pokémon, mettez à jour le pixmap de l'image label correspondante
-        pokemon_name = self.pokemon_liste[index]
+        pokemon_name = self.pokemon_liste[index] #index du pokemon choisit
         self.ui.poke_main.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/front/{pokemon_name}.png"))
         self.ui.poke_main.setScaledContents(True)
-        self.indice = index
+        self.index = index
         
         
     def shift_pokemon(self,event):
-        print(self.indice)
-        self.current_pokemon = self.indice
+        print(self.index)
         print("j'arrive ici")
         self.close()
-        return self.indice
+        
         
     
 

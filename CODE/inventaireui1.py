@@ -15,7 +15,7 @@ class Ui_Form2(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(505, 259)
-        self.fond = QtWidgets.QLabel(Form)
+        self.fond = QtfWidgets.QLabel(Form)
         self.fond.setGeometry(QtCore.QRect(0, -60, 511, 441))
         self.fond.setText("")
         self.fond.setPixmap(QtGui.QPixmap("../../../Downloads/Untitled design (11).png"))
