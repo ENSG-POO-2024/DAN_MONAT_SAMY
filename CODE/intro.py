@@ -26,6 +26,7 @@ class MyDialog(QDialog):
 
     def open_pokedex_window(self):
         pokemon_list_data = self.pokemon_list.pokemon_list
+        print(pokemon_list_data)
 
         noms_starter =[]
         copie_dict = copy.deepcopy(vp.pokemon_dict)

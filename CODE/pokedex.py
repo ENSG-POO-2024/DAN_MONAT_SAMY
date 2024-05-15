@@ -20,14 +20,14 @@ class PokemonList:
                     pokemon_info = {
                         "number": row[0],
                         "name": row[1],
-                        "image_name": f"/CODE/image tiles/pokemon_Combat/front_black/{row[0]}.png"
+                        "image_name": f"CODE/image tiles/pokemon_Combat/front_black/{row[0]}.png"
                     }
                     pokemon_list.append(pokemon_info)
                 elif row[-1] == '1' and cheat:  
                     pokemon_info = {
                         "number": row[0],
                         "name": row[1],
-                        "image_name": f"/CODE/image tiles/pokemon_Combat/front/{row[0]}.png"
+                        "image_name": f"CODE/image tiles/pokemon_Combat/front/{row[0]}.png"
                     }
                     
                     pokemon_list.append(pokemon_info)
