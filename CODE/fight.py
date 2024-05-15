@@ -791,7 +791,7 @@ class FightWindow(QDialog):
     def set_dialogue_text(self, text, temps=0):
         self.ui.dialogue.setPlainText(text)
 
-        font_id = QFontDatabase.addApplicationFont("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/police.ttf")
+        font_id = QFontDatabase.addApplicationFont("data/police.ttf")
         font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
         font = QFont(font_family)
         self.ui.dialogue.setFont(font)

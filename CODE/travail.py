@@ -38,11 +38,11 @@ class GameBoard(QDialog):
         
         self.white_square_pos = [0, 0]  # Position initiale de la case blanche (coin supérieur gauche)
         
-        self.road_image = QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/road.png").scaled(self.square_size, self.square_size)  
-        self.grass_image = QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/grass.png").scaled(self.square_size, self.square_size) 
-        self.tree_image = QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/arbre.png").scaled(self.square_size, self.square_size)  
-        self.tall_grass_image = QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/tall_grass.png").scaled(self.square_size, self.square_size)
-        self.tall_grass_div_image = QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/tall_grass.png").scaled(self.square_size, self.square_size)
+        self.road_image = QPixmap("CODE/image tiles/road.png").scaled(self.square_size, self.square_size)  
+        self.grass_image = QPixmap("CODE/image tiles/grass.png").scaled(self.square_size, self.square_size) 
+        self.tree_image = QPixmap("CODE/image tiles/arbre.png").scaled(self.square_size, self.square_size)  
+        self.tall_grass_image = QPixmap("CODE/image tiles/tall_grass.png").scaled(self.square_size, self.square_size)
+        self.tall_grass_div_image = QPixmap("CODE/image tiles/tall_grass.png").scaled(self.square_size, self.square_size)
         
         self.setStyleSheet("background-color: lightblue;")  # Changer la couleur de fond
         
@@ -54,13 +54,13 @@ class GameBoard(QDialog):
 
         # Charger les images du personnage
         self.player_images = {
-            "left": QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/left.png").scaled(self.square_size, self.square_size),
-            "right": QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/right.png").scaled(self.square_size, self.square_size),
-            "up": QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/top.png").scaled(self.square_size, self.square_size),
-            "down": QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/bot.png").scaled(self.square_size, self.square_size)
+            "left": QPixmap("CODE/image tiles/left.png").scaled(self.square_size, self.square_size),
+            "right": QPixmap("CODE/image tiles/right.png").scaled(self.square_size, self.square_size),
+            "up": QPixmap("CODE/image tiles/top.png").scaled(self.square_size, self.square_size),
+            "down": QPixmap("CODE/image tiles/bot.png").scaled(self.square_size, self.square_size)
         }
         
-        self.load_coordinates("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/pokemon_coordinates_modified.csv")
+        self.load_coordinates("data/pokemon_coordinates_modified.csv")
 
         self.initUI()
         
@@ -103,7 +103,7 @@ class GameBoard(QDialog):
         # Charger les positions des herbes hautes depuis le fichier CSV
         tall_grass_positions = []
         try:
-            with open("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/pokemon_coordinates_modified.csv", newline='') as csvfile:
+            with open("data/pokemon_coordinates_modified.csv", newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     x, y = int(row['coord_x']), int(row['coord_y'])
@@ -258,7 +258,7 @@ class GameBoard(QDialog):
                 if pokemon_number and pokemon_name:
                     #self.show_high_grass_window((pokemon_name, pokemon_number))  
                     self.show_combat_ui(new_pos)
-                    self.pokemon_list.modify_pokemon(pokemon_number, pokemon_name, f"/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/pokemon_Combat/front/{pokemon_number}.png")  # Mettre à jour le Pokédex
+                    self.pokemon_list.modify_pokemon(pokemon_number, pokemon_name, f"CODE/image tiles/pokemon_Combat/front/{pokemon_number}.png")  # Mettre à jour le Pokédex
 
     
 
