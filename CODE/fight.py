@@ -180,8 +180,8 @@ class Combat:
 
             
         attaque = ['Normal', 30, 'Charge']
-
-        return self.joueur.pokemon_equipe[self.indice].attaquer(attaque, self.pokemon_adversaire)
+        deg,message=self.joueur.pokemon_equipe[self.indice].attaquer(attaque, self.pokemon_adversaire)
+        return deg,message
         
     def attaquer_adversaire(self):#c'est bon
         """
@@ -193,22 +193,22 @@ class Combat:
             True si l'attaque a été réussie, False sinon.
         """
         attaque_aleatoire = rd.choice([[self.pokemon_adversaire.stats['Type 1'], self.pokemon_adversaire.stats['puissance'], self.pokemon_adversaire.stats['attaque_speciale']], ['Normal', 30, 'Charge']])
-
-        return self.pokemon_adversaire.attaquer(attaque_aleatoire, self.joueur.pokemon_equipe[self.indice])
+        deg,message=self.pokemon_adversaire.attaquer(attaque_aleatoire, self.joueur.pokemon_equipe[self.indice])
+        return deg,message,attaque_aleatoire[2]
         
             
     def fuir_adv(self):#c'est bon
         if self.pokemon_adversaire.stats['Legendary']:
             aleatoire = rd.randint(0, 100)
             if aleatoire < 10:
-                #FightWindow.set_dialogue_text(f"Le {self.pokemon_adversaire.name} sauvage a pris la fuite !")
+               
             
                 return True
             return False
         else:
             aleatoire = rd.randint(0, 100)
             if aleatoire < 5:
-                #FightWindow.set_dialogue_text(f"Le {self.pokemon_adversaire.name} sauvage a pris la fuite !")
+                
             
                 return True
             return False
@@ -250,9 +250,7 @@ class Pokemons(metaclass=ABCMeta):
         self.stats = copy.deepcopy(vp.pokemon_dict[name])
         self.niveau = self.stats['Niveau']
         self.exp=vp.exp_necessaire_par_niveau[self.niveau-1]
-        
-       #self.pv = self.stats['HP'][0]
-        
+     
 
     def __str__(self):
         """
@@ -281,14 +279,16 @@ class Pokemons(metaclass=ABCMeta):
         """
         ancien_niveau=self.niveau
         self.exp+=exp_gagne
-        #FightWindow.set_dialogue_text(f"{self.name} a gagné {exp_gagne} d'exp")
-        print(self.exp)
+        self.monte_lvl=False
+        self.evolution=False
+       
+        
         for i in range(len(vp.exp_necessaire_par_niveau)):
             if vp.exp_necessaire_par_niveau[i]<=self.exp<vp.exp_necessaire_par_niveau[i+1]:
                 self.niveau=vp.exp_niveau_pokemon[vp.exp_necessaire_par_niveau[i]]
         diff=self.niveau-ancien_niveau
         if diff!=0:
-           # FightWindow.set_dialogue_text(f"{self.name} monte au lvl {self.niveau}")
+            self.monte_lvl=True
             self.stats['Total']+=6*(2*diff)
             self.stats['Niveau']=self.niveau
             if  self.stats['HP'][0]!=0 :
@@ -299,28 +299,31 @@ class Pokemons(metaclass=ABCMeta):
             self.stats['Sp. Atk']+=2*diff
             self.stats['Sp. Def']+=2*diff
             self.stats['Speed']+=2*diff
-        #else :
-           # FightWindow.set_dialogue_text(f"{self.name} est lvl {self.niveau}")
-
+        else :
+           
+            self.monte_lvl=False
         if self.niveau==30 and self.stats['Evolution']==2:
                 self.name=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Name']=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Evolution']-=1
-               # FightWindow.set_dialogue_text("evolution")
+                self.evolution=True
+            
 
         elif self.niveau==30 and self.stats['Evolution']==3 :
                 self.name=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Name']=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Evolution']=0
-                #FightWindow.set_dialogue_text("evolution")
+                self.evolution=True
+                
 
         elif self.niveau==40 and self.stats['Evolution']==1 :
                 self.name=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Name']=vp.pokemons_liste[self.stats['Numero']]
                 self.stats['Evolution']-=1
-                #FightWindow.set_dialogue_text("evolution")
+                self.evolution=True
+               
 
-
+        return self.monte_lvl,self.evolution
             
 
     
@@ -340,6 +343,7 @@ class Pokemons(metaclass=ABCMeta):
         -------
         None
         """
+        message=""
         if self.stats['Type 1'] == attaque[0]:
             STAB = 1.5
         else:
@@ -354,17 +358,16 @@ class Pokemons(metaclass=ABCMeta):
             pokemon2.stats['HP'][0] -= deg
             if pokemon2.stats['HP'][0]<0:
                 pokemon2.stats['HP'][0]=0
-            #FightWindow.set_dialogue_text(self,f"{self.name} utilise {attaque[2]}  sur {pokemon2.name}  et lui inflige {deg} points de dégâts.")
-            #if  type1==0 :
-                #FightWindow.set_dialogue_text("L'attaque n'a aucun effet !")
+            if  type1==0 :
+                message="L'attaque n'a aucun effet !"
                 
 
-            #elif type1==0.5 :
-                #FightWindow.set_dialogue_text("Ce n'est pas très efficace ...")
+            elif type1==0.5 :
+                message= "Ce n'est pas très efficace ..."
                 
 
-            #elif type1==2:
-                #FightWindow.set_dialogue_text("C'est super efficace !")
+            elif type1==2:
+                message= "C'est super efficace !"
                 
 
         else :
@@ -378,16 +381,15 @@ class Pokemons(metaclass=ABCMeta):
             pokemon2.stats['HP'][0] -= deg
             if pokemon2.stats['HP'][0]<0:
                 pokemon2.stats['HP'][0]=0
-            #FightWindow.set_dialogue_text(f"{self.name} utilise {attaque[2]}  sur {pokemon2.name}  et lui inflige {deg} points de dégâts.")
-            #if  type1*type2==0 :
-                #FightWindow.set_dialogue_text("L'attaque n'a aucun effet !")
+            if  type1*type2==0 :
+                message="L'attaque n'a aucun effet !"
 
-            #elif type1*type2<=0.5 :
-                #FightWindow.set_dialogue_text("Ce n'est pas très efficace ...")
+            elif type1*type2<=0.5 :
+                message= "Ce n'est pas très efficace ..."
 
-            #elif type1*type2>=2:
-                #FightWindow.set_dialogue_text("C'est super efficace !")
-        return deg
+            elif type1*type2>=2:
+               message= "C'est super efficace !"
+        return deg,message
 
     def est_ko(self):
         """
@@ -567,7 +569,7 @@ class FightWindow(QDialog):
         # Ajoutez des fonctionnalités de clic aux boutons en définissant des fonctions correspondantes
         df = pd.read_csv("data/merged_data_fr.csv")
         self.current_pokemon = int
-
+        self.text_queue = [] 
         #Dresseur1 = Dresseur("Sacha")
         #dresseur.pokemon_equipe.append(Pokemons('Charmander'))
 
@@ -630,12 +632,12 @@ class FightWindow(QDialog):
             
             if self.compteur < len(self.phrases_intro):
                 # Affichage de la prochaine phrase d'introduction
-                self.set_dialogue_text(self.phrases_intro[self.compteur])
+                self.ui.dialogue.setPlainText(self.phrases_intro[self.compteur])
                 self.compteur += 1
             else:
                 # Affichage d'un message lorsque toutes les phrases ont été affichées
                 self.changer_image_pok(self.num_pok_dress[0])
-                self.set_dialogue_text("Que voulez-vous faire ?")
+                self.ui.dialogue.setPlainText("Que voulez-vous faire ?")
                 self.round()
 
     
@@ -645,22 +647,23 @@ class FightWindow(QDialog):
         
         if self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['Speed'] >= self.cb.combat.pokemon_adversaire.stats['Speed']:
             self.set_dialogue_text("Vous avez été plus rapide!",temps=0.5)
-            self.set_dialogue_text("Votre Pokémon utilise Attaque spe!")
-            deg=self.cb.combat.attaque_spe()
+            self.set_dialogue_text(f"C'est au tour de {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name} d'attaquer.",0.5)
+            self.set_dialogue_text(f"Votre Pokémon utilise {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].stats['attaque_speciale']}!")
+            deg,message=self.cb.combat.attaque_spe()
             self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
+            self.set_dialogue_text(f"{message}",0.5)
             self.defendre()
 
             
     
         else:
-            self.defendre()
-            print("defense")
             self.set_dialogue_text("Il a été plus rapide!",1)
-            
-            deg=self.cb.combat.attaque_spe()
-            self.set_dialogue_text("Votre Pokémon utilise Attaque spe!")
+            self.defendre()
+            self.set_dialogue_text(f"C'est au tour de {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name} d'attaquer.",0.5)
+            self.set_dialogue_text(f"Votre Pokémon utilise {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].stats['attaque_speciale']}!")
+            deg,message=self.cb.combat.attaque_spe()
             self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
-        
+            self.set_dialogue_text(f"{message}",0.5)
 
     def fuite(self):
         """
@@ -683,26 +686,37 @@ class FightWindow(QDialog):
         if self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['Speed'] >= self.cb.combat.pokemon_adversaire.stats['Speed']:
 
             self.set_dialogue_text("Vous avez été plus rapide!",temps=0.5)
-    
-        else:
+            self.set_dialogue_text(f"C'est au tour de {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name} d'attaquer.",0.5)
+            self.set_dialogue_text("Votre Pokémon utilise Charge!")
+            deg,message=self.cb.combat.utiliser_charge()
+            self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
+            self.set_dialogue_text(f"{message}",0.5)
             self.defendre()
-            print("defense")
-            self.set_dialogue_text("Il a été plus rapide!",1)
+        else:
             
-        deg=self.cb.combat.utiliser_charge()
-        self.set_dialogue_text("Votre Pokémon utilise Charge !")
-        self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
+            self.set_dialogue_text("Il a été plus rapide!",1)
+            self.defendre()
+            deg,message=self.cb.combat.utiliser_charge()
+            self.set_dialogue_text("Votre Pokémon utilise Charge !")
+            self.ui.progressBar_adv.setValue(self.ui.progressBar_adv.value() - deg)
+            self.set_dialogue_text(f"{message}",0.5)
        
     def defendre(self):
         if self.cb.combat.fuir_adv():
             self.set_dialogue_text(f"Le {self.cb.combat.pokemon_adversaire.name} sauvage a pris la fuite !",0.5)
+            
             QMessageBox.information(self, "", f"Le {self.cb.combat.pokemon_adversaire.name} sauvage a pris la fuite !")
             self.close()
             return True
         else:
             self.set_dialogue_text(f"C'est au tour de {self.cb.combat.pokemon_adversaire.name} d'attaquer.",0.5)
-            deg=self.cb.combat.attaquer_adversaire()
+            deg,message,nom_attaque=self.cb.combat.attaquer_adversaire()
+            self.set_dialogue_text(f"{self.cb.combat.pokemon_adversaire.name} utilise {nom_attaque}!")
             self.ui.progressBar_pv.setValue(self.ui.progressBar_pv.value() - deg)
+            self.set_dialogue_text(f"{message}",0.5)
+
+
+
 
     def changer_image_pok(self, numero):
         self.label_3.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/back/{numero}.png"))
@@ -726,11 +740,13 @@ class FightWindow(QDialog):
               self.ui.pushButton.setEnabled(False)
               self.ui.pushButton_2.setEnabled(False)
               self.set_dialogue_text(f"Votre pokemon est mort, veuillez changer de pokemon !",temps=1)
+              self.display_next_text()
 
         elif self.cb.combat.pokemon_adversaire.est_ko():
             self.set_dialogue_text(f"{self.cb.combat.pokemon_adversaire.name} est KO !\n next..")
             self.ui.progressBar_adv.setValue(self.cb.combat.pokemon_adversaire.stats['HP'][0])
             self.set_dialogue_text(f"Vous avez gagné !\n next..",temps=1)
+            self.display_next_text()
             QMessageBox.information(self, "", "Vous avez gagné !\n next..")
             
             self.combat_gagné()
@@ -740,11 +756,11 @@ class FightWindow(QDialog):
         elif self.cb.combat.joueur.tout_est_ko():
             self.set_dialogue_text(f"{self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} est KO !\n next..")
             self.set_dialogue_text(f"Vous avez perdu !\n next..",temps=1)
+            self.display_next_text()
             QMessageBox.information(self, "", "Vous avez perdu !\n next..")
-            print("Vous avez perdu !")
             self.close()
          
-            
+        self.display_next_text()
         
     def changer_pokemon(self):
         
@@ -756,48 +772,71 @@ class FightWindow(QDialog):
         
         inventaire = Inventaire(pokemon_nom)
         inventaire.exec_()
-        self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
-        
         self.cb.combat.indice=inventaire.index
+        self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
+        self.display_next_text()
+        
         
     def combat_gagné(self):#c'est bon
          exp=vp.exp_gagne_par_niveau[self.cb.combat.pokemon_adversaire.niveau]
+         ancien_nom=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name
+         monter_lvl,evolution=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].monter_niveau(int(exp))
 
-         self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].monter_niveau(int(exp))
+         if evolution :
+             QMessageBox.information(self, "", f" {ancien_nom } evolue en {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name}")
+         
+         if monter_lvl:
+             
+             QMessageBox.information(self, "", f"{self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name} monte au lvl {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].niveau}")
 
+         else :
+             QMessageBox.information(self, "", f"{self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name} a gagné {exp} d'xp")
+        
+         
          n=len(self.cb.combat.joueur.pokemon_equipe)
 
          for i in range(0,n):
 
              if i != self.cb.combat.indice :
+                 ancien_nom=self.cb.combat.joueur.pokemon_equipe[i].name
+                 monter_lvl,evolution=self.cb.combat.joueur.pokemon_equipe[i].monter_niveau(math.floor(int(exp)/(n-1)))
+                 if evolution :
+                     QMessageBox.information(self, "", f" {ancien_nom } evolue en {self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name}")
+         
+                 if monter_lvl:
+             
+                     QMessageBox.information(self, "", f"{self.cb.combat.joueur.pokemon_equipe[i].name} a gagné {int(exp)/(n-1)}, il monte au lvl {self.cb.combat.joueur.pokemon_equipe[i].niveau}")
 
-                 self.cb.combat.joueur.pokemon_equipe[i].monter_niveau(math.floor(int(exp)/(n-1)))
-                 
+                 else :
+                     QMessageBox.information(self, "", f"{self.cb.combat.joueur.pokemon_equipe[i].name} a gagné {int(exp)/(n-1)} d'xp")
+        
          if n < 6 :
              self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
-
+             QMessageBox.information(self, "", f"{self.cb.combat.pokemon_adversaire.name} a été capturé")
          else :
-             print("L'équipe est déjà complète, vous devez retirer un Pokémon avant d'en ajouter un autre.")
              
+             self.set_dialogue_text("L'équipe est déjà complète, vous devez retirer un Pokémon avant d'en ajouter un autre.")
              self.changer_pokemon()
              self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
              
 
-
-
-    def afficher_autre_texte(self, texte):
-        self.set_dialogue_text(texte)
-
     def set_dialogue_text(self, text, temps=0):
-        self.ui.dialogue.setPlainText(text)
-
-        #font_id = QFontDatabase.addApplicationFont("data/police.ttf")
-        #font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
-        #font = QFont(font_family)
-        #self.ui.dialogue.setFont(font)
-        self.ui.dialogue.setStyleSheet("background-color: rgba(0,0,0,0); margin: 10px; padding: 0px;")
-        time.sleep(temps)
         
+        self.text_queue.append(text)  # Ajoute le texte à la file d'attente
+        
+        
+    
+    def display_next_text(self):
+        if self.text_queue:
+            text = self.text_queue.pop(0)  # Récupère le premier texte de la file d'attente
+            self.ui.dialogue.setPlainText(text)
+            #font_id = QFontDatabase.addApplicationFont("data/police.ttf")
+            #font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            #font = QFont(font_family)
+            #self.ui.dialogue.setFont(font)
+
+            # Affiche le prochain texte après 5 secondes
+            QTimer.singleShot(50000, self.display_next_text)
     
         
 
