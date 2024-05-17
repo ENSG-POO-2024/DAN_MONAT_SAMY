@@ -14,150 +14,38 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(600, 600)
-        self.widget = QVideoWidget(Dialog)
-        self.widget.setGeometry(QtCore.QRect(0, 0, 581, 541))
-        self.widget.setObjectName("widget")
-        self.pushButton = QtWidgets.QPushButton(self.widget)
-        self.pushButton.setGeometry(QtCore.QRect(210, 370, 154, 91))
-        self.pushButton.setMouseTracking(True)
-        self.pushButton.setStyleSheet("QPushButton {\n"
-"  align-items: center;\n"
-"  background-color: #fee6e3;\n"
-"  border: 2px solid #111;\n"
-"  border-radius: 8px;\n"
-"  box-sizing: border-box;\n"
-"  color: #111;\n"
-"  cursor: pointer;\n"
-"  display: flex;\n"
-"  font-family: Inter,sans-serif;\n"
-"  font-size: 16px;\n"
-"  height: 48px;\n"
-"  justify-content: center;\n"
-"  line-height: 24px;\n"
-"  max-width: 100%;\n"
-"  padding: 0 25px;\n"
-"  position: relative;\n"
-"  text-align: center;\n"
-"  text-decoration: none;\n"
-"  user-select: none;\n"
-"  -webkit-user-select: none;\n"
-"  touch-action: manipulation;\n"
-"}\n"
-"\n"
-"QPushButton:after {\n"
-"  background-color: #111;\n"
-"  border-radius: 8px;\n"
-"  content: \"\";\n"
-"  display: block;\n"
-"  height: 48px;\n"
-"  left: 0;\n"
-"  width: 100%;\n"
-"  position: absolute;\n"
-"  top: -2px;\n"
-"  transform: translate(8px, 8px);\n"
-"  transition: transform .2s ease-out;\n"
-"  z-index: -1;\n"
-"}\n"
-"\n"
-"QPushButton:hover:after {\n"
-"  transform: translate(0, 0);\n"
-"}\n"
-"\n"
-"QPushButton:active {\n"
-"  background-color: #ffdeda;\n"
-"  outline: 0;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"  outline: 0;\n"
-"}\n"
-"\n"
-"@media (min-width: 768px) {\n"
-"  QPushButton {\n"
-"    padding: 0 40px;\n"
-"  }\n"
-"}\n"
-"")
-        self.pushButton.setObjectName("pushButton")
-        self.label_2 = QtWidgets.QLabel(self.widget)
-        self.label_2.setGeometry(QtCore.QRect(0, 0, 571, 181))
-        self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/CODE/image tiles/Sam_Monat_dan.png"))
-        self.label_2.setScaledContents(True)
-        self.label_2.setObjectName("label_2")
-        self.label = QtWidgets.QLabel(self.widget)
-        self.label.setGeometry(QtCore.QRect(0, -10, 591, 581))
-        self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("CODE/image tiles/pokemon.gif"))
-        self.label.setScaledContents(True)
-        self.label.setObjectName("label")
-        self.pushButton_2 = QtWidgets.QPushButton(self.widget)
-        self.pushButton_2.setGeometry(QtCore.QRect(210, 490, 154, 31))
-        self.pushButton_2.setMouseTracking(True)
-        self.pushButton_2.setStyleSheet("QPushButton {\n"
-"  align-items: center;\n"
-"  background-color: #fee6e3;\n"
-"  border: 2px solid #111;\n"
-"  border-radius: 8px;\n"
-"  box-sizing: border-box;\n"
-"  color: #111;\n"
-"  cursor: pointer;\n"
-"  display: flex;\n"
-"  font-family: Inter,sans-serif;\n"
-"  font-size: 15px;\n"
-"  height: 48px;\n"
-"  justify-content: center;\n"
-"  line-height: 24px;\n"
-"  max-width: 100%;\n"
-"  padding: 0 25px;\n"
-"  position: relative;\n"
-"  text-align: center;\n"
-"  text-decoration: none;\n"
-"  user-select: none;\n"
-"  -webkit-user-select: none;\n"
-"  touch-action: manipulation;\n"
-"}\n"
-"\n"
-"QPushButton:after {\n"
-"  background-color: #111;\n"
-"  border-radius: 8px;\n"
-"  content: \"\";\n"
-"  display: block;\n"
-"  height: 48px;\n"
-"  left: 0;\n"
-"  width: 100%;\n"
-"  position: absolute;\n"
-"  top: -2px;\n"
-"  transform: translate(8px, 8px);\n"
-"  transition: transform .2s ease-out;\n"
-"  z-index: -1;\n"
-"}\n"
-"\n"
-"QPushButton:hover:after {\n"
-"  transform: translate(0, 0);\n"
-"}\n"
-"\n"
-"QPushButton:active {\n"
-"  background-color: #ffdeda;\n"
-"  outline: 0;\n"
-"}\n"
-"\n"
-"QPushButton:hover {\n"
-"  outline: 0;\n"
-"}\n"
-"\n"
-"@media (min-width: 768px) {\n"
-"  QPushButton {\n"
-"    padding: 0 40px;\n"
-"  }\n"
-"}\n"
-"")
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.label.raise_()
-        self.pushButton.raise_()
-        self.label_2.raise_()
-        self.pushButton_2.raise_()
+        Dialog.resize(1920, 1080)
+        #Dialog.showFullScreen()
+        self.start_button = QtWidgets.QLabel(Dialog)
+        self.start_button.setGeometry(QtCore.QRect(490, 440, 391, 141))
+        self.start_button.setText("")
+        self.start_button.setPixmap(QtGui.QPixmap("ANIM_INTRO/Intro/start.png"))
+        self.start_button.setScaledContents(True)
+        self.start_button.setObjectName("start_button")
+        self.exit_button = QtWidgets.QLabel(Dialog)
+        self.exit_button.setGeometry(QtCore.QRect(570, 590, 231, 71))
+        self.exit_button.setText("")
+        self.exit_button.setPixmap(QtGui.QPixmap("ANIM_INTRO/Intro/exit.png"))
+        self.exit_button.setScaledContents(True)
+        self.exit_button.setObjectName("exit_button")
+        self.lineEdit = QtWidgets.QLineEdit(Dialog)
+        self.lineEdit.setGeometry(QtCore.QRect(520, 380, 331, 41))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        font.setStrikeOut(False)
+        font.setKerning(True)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineEdit.setObjectName("lineEdit")
+        self.fond = QtWidgets.QLabel(Dialog)
+        self.fond.setGeometry(QtCore.QRect(130, 80, 1171, 801))
+        self.fond.setObjectName("fond")
+        self.fond.raise_()
+        self.start_button.raise_()
+        self.exit_button.raise_()
+        self.lineEdit.raise_()
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -165,6 +53,5 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "COMMENCER"))
-        self.pushButton_2.setText(_translate("Dialog", "QUITTER"))
-from PyQt5.QtMultimediaWidgets import QVideoWidget
+        self.lineEdit.setText(_translate("Dialog", "Entrez nom Dresseur"))
+        self.fond.setText(_translate("Dialog", "TextLabel"))

@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QScrollArea, QWidget, QLabel, QPushButton, QRadioButton, QCheckBox
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap,QMovie
 from PyQt5.QtCore import Qt,pyqtSignal
 #from UI.Wilkommen import Ui_MainWindow
 from pokedex import PokemonList
@@ -18,13 +18,23 @@ class MyDialog(QDialog):
 
         self.selected_pokemon = []  # Ajout de l'attribut selected_pokemon
         super().__init__()
+        #self.showFullScreen()
         self.ui = Ui_Dialog()
-        self.setWindowFlags(Qt.FramelessWindowHint)  # Pour supprimer les bordures de la fenêtre
-        self.setAttribute(Qt.WA_TranslucentBackground)  # Pour rendre la fenêtre transparente
+        self.setWindowFlags(Qt.FramelessWindowHint)  
+        self.setAttribute(Qt.WA_TranslucentBackground)  
+        
         self.ui.setupUi(self)
-        self.ui.pushButton.clicked.connect(self.open_pokedex_window)
+        self.ui.start_button.mousePressEvent=self.open_pokedex_window
+        self.ui.exit_button.mousePressEvent=self.close
+        
+        self.gif_poke=QMovie("ANIM_INTRO/Intro/fond.gif")
+        self.ui.fond.setMovie(self.gif_poke)
+        self.gif_poke.setScaledSize(self.ui.fond.size())
+        self.gif_poke.start()
+        self.ui.fond.setObjectName("fond")
+        
 
-    def open_pokedex_window(self):
+    def open_pokedex_window(self,event):
         pokemon_list_data = self.pokemon_list.pokemon_list
         print(pokemon_list_data)
 
@@ -53,13 +63,13 @@ class MyDialog(QDialog):
         # Assigner selected_pokemon à l'attribut de classe
         self.selected_pokemon = selected_pokemon
         self.pokemon_list.add_starters(selected_pokemon)
-        self.ui.pushButton.setText("GOOO !!")
-        self.ui.pushButton.clicked.disconnect()  # Déconnexion de l'ancienne connexion
-        self.ui.pushButton.clicked.connect(self.open_game_board)  # Nouvelle connexion
+        self.ui.start_button.setPixmap(QPixmap("ANIM_INTRO/Intro/start_button_next.png"))
+        self.ui.start_button.mousePressEvent=self.open_game_board  # Nouvelle connexion
 
-    def open_game_board(self):
+    def open_game_board(self,event):
         self.close()
-        game_board = GameBoard(self.selected_pokemon)  # Passer selected_pokemon à GameBoard
+        dresseur_name=self.ui.lineEdit.text()
+        game_board = GameBoard(self.selected_pokemon,dresseur_name)  
         game_board.exec()
 
 

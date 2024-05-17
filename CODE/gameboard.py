@@ -14,12 +14,20 @@ from fight import FightWindow,Dresseur,Starter,Pokemons,Soins
 
 
 class GameBoard(QDialog):
-    def __init__(self,selected_pokemon=[]):
+    def __init__(self,selected_pokemon=[],name_dresseur="Entrez nom Dresseur"):
         super().__init__()
+        self.showFullScreen()
         self.starter_data = selected_pokemon
         self.pokemon_list = PokemonList("data/pokemons_fr.csv")
         self.pokemon_list.add_starters(selected_pokemon)  # Appel de la méthode pour ajouter les starters
-        self.dresseur = Dresseur("coucou")
+        self.name_dresseur = name_dresseur
+        
+        if self.name_dresseur == "Entrez nom Dresseur":
+            self.name_dresseur = "Red"
+            self.dresseur = Dresseur(self.name_dresseur)  # Initialisation de self.dresseur
+        else:
+            self.dresseur = Dresseur(self.name_dresseur)
+        
         
         
         if selected_pokemon==[]:
@@ -32,8 +40,8 @@ class GameBoard(QDialog):
         
 
         
-        self.square_size = 50  # Taille de chaque carré (plus gros pour le zoom)
-        self.camera_size = 10  # Taille de la caméra (20x20 )
+        self.square_size = 63  # Taille de chaque carré (plus gros pour le zoom)
+        self.camera_size = 13  # Taille de la caméra (20x20 )
         self.board_size = 100  # Taille du plateau (100x100)
         self.direction = "right"  # Direction initiale
         
@@ -133,7 +141,7 @@ class GameBoard(QDialog):
                     elif random.random() < 0.2:  
                         tree_positions.append((i, j))
                     
-                    elif random.random() < 0.1:
+                    elif random.random() < 0.03:
                         heal_positions.append((i, j))
                         
                     else:
@@ -267,18 +275,16 @@ class GameBoard(QDialog):
         if self.is_valid_move(new_pos):
             self.move_player(new_pos)
             if (new_pos[0], new_pos[1]) in self.heal_positions:
-                print("je suis passé ici")
                 Soins(self.dresseur)
                 print(self.dresseur.pokemon_equipe[0].stats["HP"][0])
                 QMessageBox.information(self, "Case de Soins", "Vos pokémons ont été soignés.")
             if self.grid[new_pos[0]][new_pos[1]] == 'tall_grass':
                 pokemon_number, pokemon_name = self.get_pokemon_info(new_pos)
-                if pokemon_number and pokemon_name:
-                    #self.show_high_grass_window((pokemon_name, pokemon_number))  
+                if pokemon_number and pokemon_name: 
                     self.show_combat_ui(new_pos)
-                    self.pokemon_list.modify_pokemon(pokemon_number, pokemon_name, f"CODE/image tiles/pokemon_Combat/front/{pokemon_number}.png")  # Mettre à jour le Pokédex
-
-    
+                    self.pokemon_list.modify_pokemon(pokemon_number, pokemon_name, f"CODE/image tiles/pokemon_Combat/front/{pokemon_number}.png")
+                    self.grid[new_pos[0]][new_pos[1]] = 'tall_grass_div'
+                    
 
 
     def move_player(self, new_pos):

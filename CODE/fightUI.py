@@ -45,6 +45,7 @@ class Ui_Form(object):
         font = QtGui.QFont()
         font.setKerning(True)
         self.dialogue.setFont(font)
+        self.dialogue.setStyleSheet("background: transparent;")
         self.dialogue.setOverwriteMode(False)
         self.dialogue.setObjectName("dialogue")
         self.label = QtWidgets.QLabel(Form)

@@ -1,4 +1,5 @@
 import sys
+import os
 from abc import abstractmethod, ABCMeta
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap, QFont, QFontDatabase
@@ -614,7 +615,6 @@ class FightWindow(QDialog):
         self.ui.pushButton.setEnabled(False)
         self.ui.pushButton_2.setEnabled(False)
         self.ui.pushButton_3.setEnabled(False)
-        #self.ui.pushButton_4.setEnabled(False)
         self.ui.pushButton.clicked.connect(self.on_button_click)
         self.ui.pushButton_2.clicked.connect(self.on_button_click)
         self.ui.pushButton_4.clicked.connect(self.on_button_click)
@@ -785,6 +785,7 @@ class FightWindow(QDialog):
         
         self.ui.progressBar_pv.setMaximum(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][1])
         self.ui.progressBar_pv.setValue(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][0])
+        self.ui.pushButton_2.setText(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['attaque_speciale'])
         self.ui.progressBar_pv.setStyleSheet("QProgressBar::chunk { background-color: blue; }")
         self.nom_adv_2.setText(f"{self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name}")
         self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
@@ -792,7 +793,7 @@ class FightWindow(QDialog):
         self.display_next_text()
         
         
-    def combat_gagné(self):#c'est bon
+    def combat_gagné(self):
          exp=vp.exp_gagne_par_niveau[self.cb.combat.pokemon_adversaire.niveau]
          ancien_nom=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name
          monter_lvl,evolution=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].monter_niveau(int(exp))
@@ -835,22 +836,46 @@ class FightWindow(QDialog):
              self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
              
 
+
+    def changer_police(self):
+        font_id = QFontDatabase.addApplicationFont("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/police.ttf")
+    
+        if font_id == -1:
+            print("Erreur: Impossible de charger la police mettre votre chemin d'accès à la police dans le code")
+        else:
+            font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            print(f"Police chargée: {font_family}")
+            
+            # Appliquer la police à un widget spécifique (ex. self.ui.dialogue)
+            font = QFont(font_family)
+            self.ui.dialogue.setFont(font)
+            self.dialogue.setStyleSheet("background-color: rgba(0, 0, 0, 0); ")
+            self.ui.dialogue.setStyleSheet("background-color: rgba(0, 33, 15, 0); margin: 8px;")
+            
+            
+        
     def set_dialogue_text(self, text, temps=0):
         
         self.text_queue.append(text)  # Ajoute le texte à la file d'attente
-        
+        self.changer_police()
         
     
     def display_next_text(self):
         if self.text_queue:
             text = self.text_queue.pop(0)  # Récupère le premier texte de la file d'attente
             self.ui.dialogue.setPlainText(text)
+            font_id = QFontDatabase.addApplicationFont("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/police.ttf")
             
-            #font_id = QFontDatabase.addApplicationFont("data/police.ttf")
-            #font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
-            #font = QFont(font_family)
-            #self.ui.dialogue.setFont(font)
-        
+            if font_id == -1:
+                print("Erreur: Impossible de charger la police mettre votre chemin d'accès à la police dans le code")
+            else:
+                font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+                print(f"Police chargée: {font_family}")
+                
+                # Appliquer la police à un widget spécifique (ex. self.ui.dialogue)
+                font = QFont(font_family)
+                self.ui.dialogue.setFont(font)
+
             # Affiche le prochain texte après 5 secondes
             QTimer.singleShot(50000, self.display_next_text)
     
