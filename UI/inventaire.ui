@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>505</width>
-    <height>259</height>
+    <width>507</width>
+    <height>249</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -212,6 +212,9 @@
    </property>
    <property name="text">
     <string>X</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <zorder>fond</zorder>

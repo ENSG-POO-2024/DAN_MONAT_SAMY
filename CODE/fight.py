@@ -888,6 +888,8 @@ class Inventaire(QDialog):
         loadUi("UI/inventaire.ui", self) 
         self.ui = Ui_Form2()  
         self.ui.setupUi(self)
+        #self.ui.quitter.mousePressEvent = lambda event: self.close()
+
         
         self.pokemon_liste=pokemon_liste
         self.index=0
@@ -897,7 +899,23 @@ class Inventaire(QDialog):
         self.poke_img_3.clear()
         self.poke_img_4.clear()
         self.poke_img_5.clear()
+        self.poke_img_6.clear()
         self.poke_main.clear()
+        self.pok_pv_1.clear()
+        self.pok_pv_2.clear()
+        self.pok_pv_3.clear()
+        self.pok_pv_4.clear()
+        self.pok_pv_5.clear()
+        self.pok_pv_6.clear()
+        
+        # fait une fonction qui change le texte de pok_pv_i par le nombre de pv qu'il a slash celui qui reste
+        for i, poke_pv_attr in enumerate([self.pok_pv_1, self.pok_pv_2, self.pok_pv_3, self.pok_pv_4, self.pok_pv_5,self.pok_pv_6]):
+            if i < len(pokemon_liste):
+                pokemon_name = pokemon_liste[i]
+            else:
+                pokemon_name= "ERROR"
+                
+            poke_pv_attr.setText(f"{vp.pokemon_dict[pokemon_name]['HP'][0]}/{vp.pokemon_dict[pokemon_name]['HP'][1]}")
         
         self.ui.poke_main.mousePressEvent = self.shift_pokemon
         
