@@ -1,23 +1,18 @@
 import sys
+from abc import abstractmethod, ABCMeta
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap, QFont, QFontDatabase
 from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox,QWidget
-from combatui import Ui_Form  
+from fightUI import Ui_Form  
 from PyQt5.QtCore import QTimer, Qt 
 import pandas as pd
 from abc import abstractmethod, ABCMeta
-import visualisation_pokemon as vp
+import donnees_pokemon as vp
 import random as rd
 import math
 import copy
 import time
 from inventaireUI import Ui_Form2
-
-from abc import abstractmethod, ABCMeta
-import visualisation_pokemon as vp
-import random as rd
-import math
-import copy
 
 
 types = ["Steel", "Fighting", "Dragon", "Water", "Electric", "Fire", "Fairy", "Ice", "Bug", "Normal", "Grass", "Poison", "Psychic", "Rock", "Ground", "Ghost", "Dark", "Flying"]
@@ -562,7 +557,7 @@ class Soins:
 class FightWindow(QDialog):
     def __init__(self, pokemons=None,dresseur=None,pos=None):
         super(FightWindow, self).__init__()
-        loadUi("CODE/welcome2.ui", self) 
+        loadUi("UI/welcome2.ui", self) 
         self.ui = Ui_Form()  
         self.ui.setupUi(self)
         self.dresseur = dresseur
@@ -865,7 +860,7 @@ class FightWindow(QDialog):
 class Inventaire(QDialog):
     def __init__(self,pokemon_liste):
         super(Inventaire, self).__init__()
-        loadUi("CODE/inventaire.ui", self) 
+        loadUi("UI/inventaire.ui", self) 
         self.ui = Ui_Form2()  
         self.ui.setupUi(self)
         

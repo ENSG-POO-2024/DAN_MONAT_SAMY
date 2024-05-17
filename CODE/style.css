@@ -1,6 +1,6 @@
 @font-face {
     font-family: CustomFont;
-    src: url('/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/police.ttf');
+    src: url('data/police.ttf');
 }
 
 QWidget {

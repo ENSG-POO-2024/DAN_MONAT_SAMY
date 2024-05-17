@@ -51,9 +51,6 @@ class MainWindow(QMainWindow):
 
 
 
-
-
-
 class ChoixStarter(QDialog):
     # Définir un signal personnalisé pour émettre les Pokémon sélectionnés
     pokemon_selected = pyqtSignal(list)

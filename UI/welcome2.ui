@@ -85,7 +85,7 @@
     <rect>
      <x>467</x>
      <y>174</y>
-     <width>131</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
@@ -104,7 +104,7 @@
     <rect>
      <x>717</x>
      <y>331</y>
-     <width>111</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
@@ -118,7 +118,7 @@
     <string>Pokemon</string>
    </property>
   </widget>
-  <widget class="QTextBrowser" name="dialogue">
+<widget class="QTextBrowser" name="dialogue">
    <property name="geometry">
     <rect>
      <x>447</x>
@@ -135,14 +135,14 @@
    <property name="overwriteMode">
     <bool>false</bool>
    </property>
-  </widget>
+</widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>607</x>
      <y>175</y>
-     <width>41</width>
-     <height>16</height>
+     <width>19</width>
+     <height>14</height>
     </rect>
    </property>
    <property name="font">
@@ -257,7 +257,7 @@
     </font>
    </property>
    <property name="text">
-    <string/>
+    <string>POKEMON</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
@@ -276,7 +276,7 @@
     </font>
    </property>
    <property name="text">
-    <string/>
+    <string>ATTAQUE</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_2">
@@ -295,7 +295,7 @@
     </font>
    </property>
    <property name="text">
-    <string/>
+    <string>ATTAQUE SP2</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_3">
@@ -315,7 +315,7 @@
     </font>
    </property>
    <property name="text">
-    <string/>
+    <string>FUITE</string>
    </property>
    <property name="autoDefault">
     <bool>false</bool>

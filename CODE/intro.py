@@ -2,11 +2,11 @@ import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QMainWindow, QVBoxLayout, QHBoxLayout, QScrollArea, QWidget, QLabel, QPushButton, QRadioButton, QCheckBox
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt,pyqtSignal
-from Wilkommen import Ui_MainWindow
+#from UI.Wilkommen import Ui_MainWindow
 from pokedex import PokemonList
-from travail import GameBoard
+from gameboard import GameBoard
 from introUI import Ui_Dialog
-import visualisation_pokemon as vp
+import donnees_pokemon as vp
 import copy
 
 class MyDialog(QDialog):
