@@ -1,38 +1,41 @@
 # Pokémon: projet informatique
 
-* Marie-Dominique Van Damme: marie-dominique.van-damme@ensg.eu
-* Melvin Hersent: melvin.hersent@map.cnrs.fr
+* Clément Monat : clement.monat@ensg.eu
+* Samy Kerri : samy.kerri@ensg.eu
+* Dan Mermillod-Baron : dan.mermillod-baron@ensg.eu
 
-## Matériel de départ
+## Informations 
 
-### Dans le répertoire "document", vous avez:
+* Tous les documents finissant par .ui ne sont pas commentés car sont générés par QTDesigner.
+* Avant de commencer quoi que ce soit, veuillez installer la police du jeu Pokémon (police.ttf).
 
-* la présentation du projet informatique (ProjetInfo_Ing1_2024.pdf)
-* des exemples de règles de combat entre les pokémons (MondePokemon.pdf)
-* le support de cours des interfaces graphiques
+## Comment jouer au jeu Pokémon ?
 
-### Dans le répertoire "data", vous avez:
+Pour lancer le jeu il n'y a besoin que de lancer le fichier intro.py.
 
-* Un fichier csv contenant les 151 pokemons de la première génération, ainsi que leurs attributs :
-  1. `#` : indique le numéro du pokemon (peut être utilisé comme id)
-  2. `name` : le nom (ici en anglais) du pokemon
-  3. `Type 1` : le type du pokemon
-  4. `Type 2` : le second type du pokemon (s'il en possède un deuxième)
-  5. `Total` : le nombre total de points d'attributs (HP + Attack + Defense + Sp. Attack + Sp. Def + Speed)
-  6. `HP` : le nombre de point de vie de départ
-  7. `Attack` : le nombre de point d'attaque (coefficient pour les dégats infligés)
-  8. `Defense` : le nombre de point de défense (coefficient pour les dégats reçus)
-  9. `Sp. Atk` : le nombre de point d'attaque spéciale (coefficient pour les dégats infligés)
-  10. `Sp. Def` : le nombre de point de défense contre une attaque spéciale (coefficient pour les dégats reçus)
-  11. `Speed` : la vitesse du pokemon (détermine qui joue en premier)
-  12. `Generation` : la génération du pokemon (ici la première)
-  13. `Legendary` : rareté du pokemon, les légendaires sont normalement uniques
+### Dans le répertoire "CODE", vous avez :
 
-* Un fichier csv contenant une liste de pokemons avec des coordonnées géographiques.
+* La connexion au jeu Pokémon (intro.py) :
 
-## Comment créer votre dépôt github ?
+  Lorsque le document est lancé, une interface graphique s'affiche et vous demande de choisir un nom de personnage puis de commencer une nouvelle partie. Après avoir cliqué sur le bouton "Commencer", l'initialisation du jeu peut débuter.
+* Initialisation de l'équipe du joueur (intro.py):
+  
+  Une interface graphique vous propose de choisir 3 Pokémon parmi une liste définie. Une fois votre sélection effectuée, veuillez cliquer sur le bouton "Commencer" pour vous lancer dans l'aventure du jeu Pokémon.
+* Commencement du jeu pokémon (gameboard.py):
+  
+  Vous pouvez alors vous déplacer et explorer la carte du jeu à l'aides des flèches de votre clavier.
+  
+   Ainsi, vous pourrez affronter des Pokémon sauvages et même les capturer.
+* Affrontement avec un pokémon sauvage (fight.py)
+  
+  Pendant les combats, des dialogues s'afficheront sur votre écran. Pour passer les textes, veuillez appuyer sur la touche "Entrée". Une fois les dialogues passés, vous    pourrez choisir une action en cliquant dessus, telles que :
 
-1. Se créer un identifiant github
-2. Demander à un enseignant de vous ajouter dans l'organisation **ENSG-POO-2024**
-3. *Forker* (copier) le projet **projetPokemon** et choisissez un nom très personnalisé !
-4. Pour voir comment établir une connexion ssh entre votre ordinateur et github, voir documents/sshConnexion.md
+      Fuite : vous permettra de quitter le combat.
+      Pokémon : vous permettra de sélectionner un autre Pokémon pour remplacer celui qui est en combat.
+      Attaque et Attaque spéciale : infligeront des dégâts au Pokémon adverse.
+
+
+  
+  Vous voilà dans la partie Pokémon avec votre équipe. Amusez-vous bien !
+ 
+
