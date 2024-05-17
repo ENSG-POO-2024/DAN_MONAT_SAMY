@@ -13,7 +13,7 @@ import random as rd
 import math
 import copy
 import time
-from inventaireUI import Ui_Form2
+from inventaireUIv2 import Ui_Form2
 
 
 types = ["Steel", "Fighting", "Dragon", "Water", "Electric", "Fire", "Fairy", "Ice", "Bug", "Normal", "Grass", "Poison", "Psychic", "Rock", "Ground", "Ghost", "Dark", "Flying"]
@@ -951,6 +951,8 @@ class Inventaire(QDialog):
         loadUi("UI/inventaire.ui", self) 
         self.ui = Ui_Form2()  
         self.ui.setupUi(self)
+        self.setWindowFlags(Qt.FramelessWindowHint)  
+        self.setAttribute(Qt.WA_TranslucentBackground) 
         #self.ui.quitter.mousePressEvent = lambda event: self.close()
         self.joueur=joueur
         
@@ -971,13 +973,15 @@ class Inventaire(QDialog):
         self.pok_pv_5.clear()
         self.pok_pv_6.clear()
         
-        # fait une fonction qui change le texte de pok_pv_i par le nombre de pv qu'il a slash celui qui reste
+        # Permet de mettre à jour les pv des Pokémon dans l'inventaire
         for i, poke_pv_attr in enumerate([self.pok_pv_1, self.pok_pv_2, self.pok_pv_3, self.pok_pv_4, self.pok_pv_5,self.pok_pv_6]):
             if i < len(pokemon_liste):
                 poke_pv_attr.setText(f"{self.joueur.pokemon_equipe[i].stats['HP'][0]}/{self.joueur.pokemon_equipe[i].stats['HP'][1]}")
             
+            
         
         self.ui.poke_main.mousePressEvent = self.shift_pokemon
+        self.ui.quitter.mousePressEvent = self.shift_pokemon
         
         for i, poke_img_attr in enumerate([self.ui.poke_img_1, self.ui.poke_img_2, self.ui.poke_img_3, self.ui.poke_img_4, self.ui.poke_img_5,self.ui.poke_img_6]):
             if i < len(pokemon_liste):
@@ -1001,8 +1005,7 @@ class Inventaire(QDialog):
         :param index: Index du Pokémon sélectionné dans la liste
         """
         pokemon_name = self.pokemon_liste[index] #index du pokemon choisit
-        self.ui.poke_main.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/front/{pokemon_name}.png"))
-        self.ui.poke_main.setScaledContents(True)
+        
         self.index = index
         
         
