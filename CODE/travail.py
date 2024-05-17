@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMessageBox,QDialog, QLabel, QVBoxLayout, QHBoxLayou
 import random
 import csv
 from pokedex import PokemonList
-from fight import FightWindow,Dresseur,Starter,Pokemons
+from fight import FightWindow,Dresseur,Starter,Pokemons,Soins
 
 
 
@@ -20,6 +20,7 @@ class GameBoard(QDialog):
         self.pokemon_list = PokemonList("data/pokemons_fr.csv")
         self.pokemon_list.add_starters(selected_pokemon)  # Appel de la méthode pour ajouter les starters
         self.dresseur = Dresseur("coucou")
+        
         
         if selected_pokemon==[]:
             
@@ -39,6 +40,7 @@ class GameBoard(QDialog):
         self.white_square_pos = [0, 0]  # Position initiale de la case blanche (coin supérieur gauche)
         
         self.road_image = QPixmap("CODE/image tiles/road.png").scaled(self.square_size, self.square_size)  
+        self.heal_zone = QPixmap("CODE/image tiles/heal_zone.png").scaled(self.square_size, self.square_size)
         self.grass_image = QPixmap("CODE/image tiles/grass.png").scaled(self.square_size, self.square_size) 
         self.tree_image = QPixmap("CODE/image tiles/arbre.png").scaled(self.square_size, self.square_size)  
         self.tall_grass_image = QPixmap("CODE/image tiles/tall_grass.png").scaled(self.square_size, self.square_size)
@@ -47,7 +49,7 @@ class GameBoard(QDialog):
         self.setStyleSheet("background-color: lightblue;")  # Changer la couleur de fond
         
         # Générer la grille une seule fois au démarrage
-        self.grid, self.tree_positions = self.generate_grid()
+        self.grid, self.tree_positions ,self.heal_positions= self.generate_grid()
 
         # Ajouter un attribut pour stocker les coordonnées de chaque case
         self.coordinates = [[(i, j) for j in range(self.board_size)] for i in range(self.board_size)]
@@ -122,6 +124,7 @@ class GameBoard(QDialog):
 
         # Placez aléatoirement les routes et les arbres là où il n'y a pas d'herbes hautes
         tree_positions = []
+        heal_positions = []
         for i in range(self.board_size):
             for j in range(self.board_size):
                 if grid[i][j] != 'tall_grass' and grid[i][j] != 'tall_grass_div':
@@ -129,10 +132,14 @@ class GameBoard(QDialog):
                         grid[i][j] = 'road'
                     elif random.random() < 0.2:  
                         tree_positions.append((i, j))
+                    
+                    elif random.random() < 0.1:
+                        heal_positions.append((i, j))
+                        
                     else:
                         grid[i][j] = 'grass' 
 
-        return grid, tree_positions
+        return grid, tree_positions, heal_positions
 
 
 
@@ -166,6 +173,12 @@ class GameBoard(QDialog):
                 for tree_x, tree_y in self.tree_positions:
                     if (tree_x, tree_y) == (i, j):
                         painter.drawPixmap(x, y, self.tree_image)
+                        
+                for heal_x, heal_y in self.heal_positions:
+                    if (heal_x, heal_y) == (i, j):
+                        painter.drawPixmap(x, y, self.heal_zone)
+                        
+                
 
         # Dessiner les autres éléments
         for i in range(camera_top_left_x, min(camera_top_left_x + self.camera_size, self.board_size)):
@@ -253,6 +266,11 @@ class GameBoard(QDialog):
     def try_move_player(self, new_pos):
         if self.is_valid_move(new_pos):
             self.move_player(new_pos)
+            if (new_pos[0], new_pos[1]) in self.heal_positions:
+                print("je suis passé ici")
+                Soins(self.dresseur)
+                print(self.dresseur.pokemon_equipe[0].stats["HP"][0])
+                QMessageBox.information(self, "Case de Soins", "Vos pokémons ont été soignés.")
             if self.grid[new_pos[0]][new_pos[1]] == 'tall_grass':
                 pokemon_number, pokemon_name = self.get_pokemon_info(new_pos)
                 if pokemon_number and pokemon_name:

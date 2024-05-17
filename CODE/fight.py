@@ -366,7 +366,7 @@ class Pokemons(metaclass=ABCMeta):
                 message= "Ce n'est pas très efficace ..."
                 
 
-            elif type1==2:
+            else :
                 message= "C'est super efficace !"
                 
 
@@ -574,7 +574,13 @@ class FightWindow(QDialog):
         #dresseur.pokemon_equipe.append(Pokemons('Charmander'))
 
         self.cb = Rencontre(self.dresseur, pos)
-        self.num_pok_dress = df.loc[df['Name'] == self.dresseur.pokemon_equipe[0].name, '#'].values
+    
+        self.liste_numero_pok = []
+        
+        pokemon_list= self.dresseur.pokemon_equipe
+        for pokemon in pokemon_list:
+            self.liste_numero_pok.append(df.loc[df['Name'] == pokemon.name, '#'].values[0])
+        
         
         #UI ADVERSAIRE
         num_pok_sauv = df.loc[(df['coord_x'] == pos[0]) & (df['coord_y'] == pos[1]), '#'].values
@@ -587,24 +593,28 @@ class FightWindow(QDialog):
         self.phrases_intro = [
             f"Le combat entre {self.cb.joueur.name} et {self.cb.combat.pokemon_adversaire.name} commence !",
             f"Un {self.cb.combat.pokemon_adversaire.name} sauvage apparait !",
-            f"{self.cb.joueur.pokemon_equipe[0]} ! Go!",
+            f"{self.cb.joueur.pokemon_equipe[self.cb.combat.indice]} ! Go!",
         ]
         self.compteur = 0
         self.set_dialogue_text(self.phrases_intro[self.compteur])
         self.compteur += 1
 
-        self.ui.progressBar_adv.setValue(self.cb.combat.pokemon_adversaire.stats['HP'][0])
-        self.ui.progressBar_pv.setValue(self.cb.joueur.pokemon_equipe[0].stats['HP'][0])
+        self.ui.progressBar_adv.setMaximum(self.cb.combat.pokemon_adversaire.stats['HP'][1])
+        self.ui.progressBar_pv.setMaximum(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][1])
+        self.ui.progressBar_adv.setValue(self.cb.combat.pokemon_adversaire.stats['HP'][1])
+        self.ui.progressBar_pv.setValue(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][0])
         self.ui.progressBar_adv.setStyleSheet("QProgressBar::chunk { background-color: red; }")
         self.ui.progressBar_pv.setStyleSheet("QProgressBar::chunk { background-color: blue; }")
-
         
+
+        self.nom_adv_2.setText(f"{self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name}")
         
         self.ui.pushButton.setText("Charge")
         self.ui.pushButton.clicked.connect(self.utiliser_charge)
         self.ui.pushButton_2.clicked.connect(self.attaquer_sp2)
         self.ui.pushButton_2.setText(self.cb.joueur.pokemon_equipe[0].stats['attaque_speciale'])
         self.ui.pushButton_3.clicked.connect(self.fuite)
+        self.ui.pushButton_4.setText("Pokemon")
         self.ui.pushButton_4.clicked.connect(self.changer_pokemon)
         self.ui.pushButton.setEnabled(False)
         self.ui.pushButton_2.setEnabled(False)
@@ -635,9 +645,9 @@ class FightWindow(QDialog):
                 self.ui.dialogue.setPlainText(self.phrases_intro[self.compteur])
                 self.compteur += 1
             else:
-                # Affichage d'un message lorsque toutes les phrases ont été affichées
-                self.changer_image_pok(self.num_pok_dress[0])
+                # Affichage d'un message lorsque toutes les phrases ont été affichées 
                 self.ui.dialogue.setPlainText("Que voulez-vous faire ?")
+                self.changer_image_pok(self.liste_numero_pok[self.cb.combat.indice])
                 self.round()
 
     
@@ -770,10 +780,20 @@ class FightWindow(QDialog):
         for pokemon in pokemon_list:
             pokemon_nom.append(df.loc[df['Name'] == pokemon.name, '#'].values[0])
         
+        
+        self.liste_numero_pok = pokemon_nom
+        
         inventaire = Inventaire(pokemon_nom)
         inventaire.exec_()
         self.cb.combat.indice=inventaire.index
+        self.changer_image_pok(pokemon_nom[self.cb.combat.indice])
+        
+        self.ui.progressBar_pv.setMaximum(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][1])
+        self.ui.progressBar_pv.setValue(self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['HP'][0])
+        self.ui.progressBar_pv.setStyleSheet("QProgressBar::chunk { background-color: blue; }")
+        self.nom_adv_2.setText(f"{self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name}")
         self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
+        
         self.display_next_text()
         
         
@@ -830,11 +850,12 @@ class FightWindow(QDialog):
         if self.text_queue:
             text = self.text_queue.pop(0)  # Récupère le premier texte de la file d'attente
             self.ui.dialogue.setPlainText(text)
+            
             #font_id = QFontDatabase.addApplicationFont("data/police.ttf")
             #font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
             #font = QFont(font_family)
             #self.ui.dialogue.setFont(font)
-
+        
             # Affiche le prochain texte après 5 secondes
             QTimer.singleShot(50000, self.display_next_text)
     
