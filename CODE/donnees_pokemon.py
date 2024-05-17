@@ -47,6 +47,8 @@ for index, row in pokemon_data.iterrows():
     }
     pokemon_dict[pokemon_id] = pokemon_info
 pokemon_dict = {nom: {cle: [valeur, valeur] if cle == 'HP' else valeur for cle, valeur in details.items()} for nom, details in pokemon_dict.items()}
+
+#mise en place du système de niveau et d'évolution dans le dictionnaire
 liste=[20,30,40,20,30,40,20,30,40,20,30,40,20,30,40,20,30,40,20,30,20,30,20,30,20,30,20,30,20,30,40,20,30,40,20,30,20,30,20,30,20,30,20,30,40,20,30,20,30,20,30,20,30,20,30,20,30,20,30,20,30,40,20,30,40,20,30,40,20,30,40,20,30,20,30,40,20,30,20,30,20,30,30,20,30,20,30,20,30,20,30,20,30,40,30,20,30,20,30,20,30,20,30,20,30,30,30,30,20,30,20,30,30,30,30,20,30,20,30,20,30,30,30,30,30,30,30,30,20,30,30,30,20,30,30,30,30,20,30,20,30,30,30,50,50,50,20,30,40,50,50]
 for i, (pokemon, niveau) in enumerate(zip(pokemon_dict.keys(), liste)):
     pokemon_dict[pokemon]['Niveau'] = niveau
@@ -58,7 +60,7 @@ for i, (pokemon, evolution) in enumerate(zip(pokemon_dict.keys(), evolutions_lis
 
 
 
-
+#ajout des attaques spéciales au dictionnaire
 attaques_speciales_par_pokemon = {
     "Bulbasaur": {"attaque": "Fouet Lianes", "puissance": 45},
     "Ivysaur": {"attaque": "Vampigraine", "puissance": 60},
@@ -249,6 +251,7 @@ pokemons_liste = [
     "Mewtwo", "Mew"
 ]
 
+#dictionnaire servant au système de niveau 
 exp_niveau_pokemon = {
     0: 1,
     100: 2,

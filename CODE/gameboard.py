@@ -15,6 +15,13 @@ from fight import FightWindow,Dresseur,Starter,Pokemons,Soins
 
 class GameBoard(QDialog):
     def __init__(self,selected_pokemon=[],name_dresseur="Entrez nom Dresseur"):
+        """
+        Initialise le plateau de jeu avec les Pokémon sélectionnés et le nom du dresseur.
+        
+        Parameters:
+            selected_pokemon (list): Liste des Pokémon sélectionnés.
+            name_dresseur (str): Nom du dresseur.
+        """
         super().__init__()
         self.showFullScreen()
         self.starter_data = selected_pokemon
@@ -75,6 +82,12 @@ class GameBoard(QDialog):
         self.initUI()
         
     def load_coordinates(self, file_path):
+        """
+        Charge les coordonnées des Pokémon depuis un fichier CSV.
+        
+        Parameters:
+            file_path (str): Chemin du fichier CSV contenant les coordonnées des Pokémon.
+        """
         try:
             with open(file_path, newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
@@ -88,6 +101,9 @@ class GameBoard(QDialog):
     
 
     def initUI(self):
+        """
+        Initialise l'interface utilisateur du plateau de jeu.
+        """
         self.setWindowTitle('Game Board')
         self.setGeometry(100, 100, 800, 800)  # Taille de la fenêtre
         
@@ -101,11 +117,20 @@ class GameBoard(QDialog):
         self.setLayout(layout)
         
     def open_pokedex_window(self):
+        """
+        Ouvre la fenêtre du Pokédex.
+        """
         pokemon_list_data = self.pokemon_list.pokemon_list  # Accéder à la liste de Pokémon à l'intérieur de l'objet PokemonList
         pokedex_window = PokedexUI(pokemon_list_data)
         pokedex_window.exec_()
         
     def generate_grid(self):
+        """
+        Génère la grille du plateau de jeu avec des éléments comme les routes, les arbres et les herbes hautes.
+        
+        Returns:
+            tuple: La grille générée, les positions des arbres et les positions des zones de soins.
+        """
         
         TOP_ZONE_SIZE = 1  
         grid = [['grass' for _ in range(self.board_size)] for _ in range(self.board_size)]  # Commencez par remplir tout de herbe
@@ -153,6 +178,12 @@ class GameBoard(QDialog):
 
         
     def paintEvent(self, event):
+        """
+        Gère l'événement de peinture pour dessiner le plateau de jeu.
+        
+        Parameters:
+            event (QPaintEvent): L'événement de peinture.
+        """
         painter = QPainter(self)
         painter.setPen(QColor(0, 0, 0))  # Couleur des lignes
 
@@ -212,6 +243,12 @@ class GameBoard(QDialog):
 
 
     def keyPressEvent(self, event):
+        """
+        Gère les événements liés aux touches du clavier pour le déplacement du joueur.
+
+        Args:
+            event (QKeyEvent): Événement de touche pressée.
+        """
         key = event.key()
         if key == Qt.Key_Up:
             self.direction = "up"
@@ -231,6 +268,15 @@ class GameBoard(QDialog):
             self.try_move_player(new_pos)
 
     def is_valid_move(self, pos):
+        """
+        Vérifie si un déplacement vers une position donnée est valide.
+
+        Args:
+            pos (tuple): Position à vérifier.
+
+        Returns:
+            bool: True si le déplacement est valide, False sinon.
+        """
         if 0 <= pos[0] < self.board_size and 0 <= pos[1] < self.board_size:
             if (pos[0], pos[1]) in self.tree_positions:
                 return False  # Le joueur ne peut pas se déplacer sur un arbre
@@ -240,6 +286,15 @@ class GameBoard(QDialog):
         return False
     
     def get_pokemon_name(self, pos):
+        """
+        Récupère le nom d'un Pokémon à partir de sa position sur le plateau.
+
+        Args:
+            pos (tuple): Position du Pokémon.
+
+        Returns:
+            str: Nom du Pokémon.
+        """
         try:
             with open("data/merged_data_fr.csv", newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
@@ -254,10 +309,25 @@ class GameBoard(QDialog):
     
     
     def show_combat_ui(self,pos):
+        """
+        Affiche l'interface utilisateur du combat avec un Pokémon sauvage.
+
+        Args:
+            pos (tuple): Position du Pokémon sauvage sur le plateau.
+        """
         combat_ui = FightWindow(pokemons=None,dresseur=self.dresseur,pos=pos)
         combat_ui.exec_()
 
     def get_pokemon_info(self, pos):
+        """
+        Récupère les informations d'un Pokémon à partir de sa position sur le plateau.
+
+        Args:
+            pos (tuple): Position du Pokémon.
+
+        Returns:
+            tuple: Numéro et nom du Pokémon.
+        """
         try:
             with open("data/merged_data_fr.csv", newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
@@ -272,6 +342,12 @@ class GameBoard(QDialog):
                 
                 
     def try_move_player(self, new_pos):
+        """
+        Tente de déplacer le joueur vers une nouvelle position.
+
+        Args:
+            new_pos (tuple): Nouvelle position du joueur.
+        """
         if self.is_valid_move(new_pos):
             self.move_player(new_pos)
             if (new_pos[0], new_pos[1]) in self.heal_positions:
@@ -288,6 +364,12 @@ class GameBoard(QDialog):
 
 
     def move_player(self, new_pos):
+        """
+        Déplace le joueur vers une nouvelle position.
+
+        Args:
+            new_pos (tuple): Nouvelle position du joueur.
+        """
         self.white_square_pos = new_pos
         self.update()
 
@@ -296,6 +378,15 @@ class GameBoard(QDialog):
 
 
 def get_first_gen_pokemon_list(csv_file_path):
+    """
+    Récupère une liste des Pokémon de la première génération à partir d'un fichier CSV.
+
+    Args:
+        csv_file_path (str): Chemin d'accès vers le fichier CSV contenant les données des Pokémon.
+
+    Returns:
+        list: Liste des noms des Pokémon de la première génération.
+    """
     with open(csv_file_path, 'r', encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=';')
         next(reader)
@@ -308,7 +399,14 @@ def get_first_gen_pokemon_list(csv_file_path):
 
 
 class PokedexUI(QDialog):
+   
     def __init__(self, pokemon_list):
+        """
+        Initialise une instance de la classe PokedexUI.
+
+        Args:
+            pokemon_list (list): Liste des Pokémon à afficher dans le Pokédex.
+        """
         super().__init__()
          # Afficher le nombre de Pokémon découverts / total dans le titre de la fenêtre
         print(pokemon_list)

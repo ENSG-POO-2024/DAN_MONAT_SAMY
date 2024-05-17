@@ -13,6 +13,10 @@ class MyDialog(QDialog):
 
 
     def __init__(self):
+        """
+        Initialise la boîte de dialogue principale, charge la liste de Pokémon,
+        configure l'interface utilisateur et connecte le bouton pour ouvrir le Pokédex.
+        """
         self.pokemon_list = PokemonList("data/pokemons_fr.csv", True)
         
 
@@ -35,6 +39,9 @@ class MyDialog(QDialog):
         
 
     def open_pokedex_window(self,event):
+        """
+        Ouvre une fenêtre de Pokédex permettant de sélectionner les Pokémon de départ.
+        """
         pokemon_list_data = self.pokemon_list.pokemon_list
         print(pokemon_list_data)
 
@@ -57,6 +64,12 @@ class MyDialog(QDialog):
         pokedex_window.close()  
 
     def start_game_with_selected_pokemon(self, selected_pokemon):
+        """
+        Démarre le jeu avec les Pokémon sélectionnés.
+        
+        Parameters:
+            selected_pokemon (list): Liste des Pokémon sélectionnés.
+        """
         print("Pokémons sélectionnés:")
         for pokemon in selected_pokemon:
             print(f"Numéro: {pokemon['number']}, Nom: {pokemon['name']}")
@@ -67,6 +80,9 @@ class MyDialog(QDialog):
         self.ui.start_button.mousePressEvent=self.open_game_board  # Nouvelle connexion
 
     def open_game_board(self,event):
+        """
+        Ouvre la fenêtre du plateau de jeu avec les Pokémon sélectionnés.
+        """
         self.close()
         dresseur_name=self.ui.lineEdit.text()
         game_board = GameBoard(self.selected_pokemon,dresseur_name)  
@@ -78,6 +94,12 @@ class ChoixStarter(QDialog):
     pokemon_selected = pyqtSignal(list)
     
     def __init__(self, pokemon_list):
+        """
+        Initialise la boîte de dialogue de choix des Pokémon de départ.
+        
+        Parameters:
+            pokemon_list (list): Liste des Pokémon disponibles pour le choix.
+        """
         super().__init__()
         self.setWindowTitle("Choisissez vos 3 Pokémons pour le combat!")
         self.resize(500, 500) 
@@ -118,6 +140,12 @@ class ChoixStarter(QDialog):
         self.setLayout(layout)
 
     def update_selection(self, state):
+        """
+        Met à jour la sélection des Pokémon lorsque l'état de la case à cocher change.
+        
+        Parameters:
+            state (int): État de la case à cocher (2 pour cochée, 0 pour décochée).
+        """
         check_box = self.sender()  
         pokemon_info = check_box.pokemon_info  
         
@@ -139,6 +167,9 @@ class ChoixStarter(QDialog):
             self.start_button.setEnabled(False)  # Désactive le bouton "Commencer" sinon
 
     def start_game_with_selected_pokemon(self):
+        """
+        Émet le signal contenant les Pokémon sélectionnés et ferme la boîte de dialogue.
+        """
         # Émettre le signal contenant les Pokémon sélectionnés
         self.pokemon_selected.emit(self.selected_pokemon)
         self.accept() 

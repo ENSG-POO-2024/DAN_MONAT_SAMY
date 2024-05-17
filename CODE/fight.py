@@ -62,7 +62,6 @@ affinite_types = [
 
 ]
 
-
 class Combat:
 
     """
@@ -129,9 +128,7 @@ class Combat:
 
             return True
 
-    
-
-    def fuir(self):#c'est bon
+    def fuir(self):
         """
         Gère la tentative de fuite pendant le combat.
 
@@ -154,23 +151,41 @@ class Combat:
                 return False
 
     def attaque_spe(self):
-        
+        """
+        Gère l'utilisation de l'attaque spéciale pendant le combat.
+
+        Returns:
+        -------
+       
+            deg : int 
+            
+            les dégats de l'attaque
+
+            message : str  
+
+            message d'efficacité de l'attaque
+        """
 
             
         attaque = [self.joueur.pokemon_equipe[self.indice].stats['Type 1'], self.joueur.pokemon_equipe[self.indice].stats['puissance'], self.joueur.pokemon_equipe[self.indice].stats['attaque_speciale']]
 
-
-        return self.joueur.pokemon_equipe[self.indice].attaquer(attaque, self.pokemon_adversaire)
+        deg,message=self.joueur.pokemon_equipe[self.indice].attaquer(attaque, self.pokemon_adversaire)
+        return deg,message
         
-
-    def utiliser_charge(self):#c'est bon
+    def utiliser_charge(self):
         """
         Gère l'utilisation de l'attaque 'Charge' pendant le combat.
 
         Returns:
         -------
-        bool
-            True si l'attaque a été utilisée avec succès, False sinon.
+        
+            deg : int 
+            
+            les dégats de l'attaque
+
+            message : str  
+
+            message d'efficacité de l'attaque
         """
         
 
@@ -179,21 +194,38 @@ class Combat:
         deg,message=self.joueur.pokemon_equipe[self.indice].attaquer(attaque, self.pokemon_adversaire)
         return deg,message
         
-    def attaquer_adversaire(self):#c'est bon
+    def attaquer_adversaire(self):
         """
         Gère l'attaque du Pokémon adverse pendant le combat.
 
         Returns:
         -------
-        bool
-            True si l'attaque a été réussie, False sinon.
+            deg : int 
+            
+            les dégats de l'attaque
+
+            message : str  
+
+            message d'efficacité de l'attaque
+
+            et le nom de l'attaque utilisé
+
+        
         """
         attaque_aleatoire = rd.choice([[self.pokemon_adversaire.stats['Type 1'], self.pokemon_adversaire.stats['puissance'], self.pokemon_adversaire.stats['attaque_speciale']], ['Normal', 30, 'Charge']])
         deg,message=self.pokemon_adversaire.attaquer(attaque_aleatoire, self.joueur.pokemon_equipe[self.indice])
         return deg,message,attaque_aleatoire[2]
-        
-            
-    def fuir_adv(self):#c'est bon
+                 
+    def fuir_adv(self):
+        """
+        Gère la fuite du Pokémon adverse pendant le combat.
+
+        Returns:
+        -------
+        bool
+            True si la fuite a été réussie, False sinon.
+        """
+
         if self.pokemon_adversaire.stats['Legendary']:
             aleatoire = rd.randint(0, 100)
             if aleatoire < 10:
@@ -208,7 +240,6 @@ class Combat:
             
                 return True
             return False
-
 
 class Pokemons(metaclass=ABCMeta):
     """
@@ -271,7 +302,7 @@ class Pokemons(metaclass=ABCMeta):
 
         Returns:
         -------
-        None
+        Bool pour avoir si on a monté de niveau ou si on a évolué
         """
         ancien_niveau=self.niveau
         self.exp+=exp_gagne
@@ -321,9 +352,6 @@ class Pokemons(metaclass=ABCMeta):
 
         return self.monte_lvl,self.evolution
             
-
-    
-
     def attaquer(self, attaque, pokemon2):
         """
         Fonction pour attaquer un autre Pokémon.
@@ -337,7 +365,13 @@ class Pokemons(metaclass=ABCMeta):
 
         Returns:
         -------
-        None
+        deg : int
+        
+        degats de l'attaque
+
+        message : str
+
+        message d'efficacité de l'attaque
         """
         message=""
         if self.stats['Type 1'] == attaque[0]:
@@ -416,19 +450,6 @@ class Dresseur:
         self.name = name
         self.pokemon_equipe = []
 
-
-    def __str__(self):
-        """
-        Retourne une chaîne de caractères représentant les  Pokémons du dresseur.
-
-        Returns:
-        -------
-        str
-            Chaîne de caractères représentant les caractéristiques du Pokémon.
-        """
-        return f" {self.name} a {len(self.pokemon_equipe)} pokemon: "
-    
-
     def tout_est_ko(self):
         """
         Vérifie si tous les Pokémon du joueur sont KO.
@@ -488,12 +509,12 @@ class Dresseur:
 class Rencontre :
     def __init__(self,joueur,position):
         """
-        Initialise une rencontre avec un joueur et une position.
+        Initialise une rencontre avec un joueur et un pokemon sauvage à une certaine position.
 
         Parameters:
         ----------
         joueur : Dresseur
-            Le joueur rencontré.
+            Le joueur .
         position : tuple
             La position de la rencontre.
 
@@ -505,8 +526,7 @@ class Rencontre :
         self.position=position
         self.pokemon_sauvage=Pokemons(vp.pokemon_coordinates[self.position])
         self.combat=Combat(self.joueur,self.pokemon_sauvage)
-        #combat.commencer()
- 
+        
 class Starter :
 
     def __init__(self,joueur,p1,p2,p3):
@@ -533,7 +553,6 @@ class Starter :
         self.joueur.pokemon_equipe.append(Pokemons( p2))
         self.joueur.pokemon_equipe.append(Pokemons( p3))
 
-
 class Soins:
        def __init__(self,joueur):
         """
@@ -552,11 +571,16 @@ class Soins:
         for pokemon in joueur.pokemon_equipe :
             pokemon.stats['HP'][0]= pokemon.stats['HP'][1]
 
-
-
-
 class FightWindow(QDialog):
     def __init__(self, pokemons=None,dresseur=None,pos=None):
+        """
+        Initialise la fenêtre de combat avec les informations des Pokémon et du dresseur.
+        
+        :param pokemons: Liste de Pokémon (optionnel)
+        :param dresseur: Le dresseur participant au combat
+        :param pos: Position du combat
+        """
+
         super(FightWindow, self).__init__()
         loadUi("UI/welcome2.ui", self) 
         self.ui = Ui_Form()  
@@ -623,15 +647,27 @@ class FightWindow(QDialog):
        # self.combat_timer.start(15000)  # 15 secondes par tour de combat
 
     def progressbar(self,value):
+        """
+        Met à jour la barre de vie du Pokémon adverse.
+        
+        :param value: Nouvelle valeur de la barre de vie
+        """
         self.ui.progressBar_adv.setValue(value)
 
     def on_button_click(self):
-        # Redémarrez le timer lorsqu'un bouton est cliqué
-            self.combat_timer.stop()
-            self.combat_timer.start(1000)  
+        """
+        Redémarre le timer lorsqu'un bouton est cliqué.
+        """
+        
+        self.combat_timer.stop()
+        self.combat_timer.start(1000)  
 
-    
     def keyPressEvent(self, event):
+        """
+        Gère les événements de pression de touche pour l'affichage des dialogues d'introduction.
+        
+        :param event: Événement de pression de touche
+        """
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
             # Vérification si toutes les phrases ont été affichées
             
@@ -645,10 +681,10 @@ class FightWindow(QDialog):
                 self.changer_image_pok(self.liste_numero_pok[self.cb.combat.indice])
                 self.round()
 
-    
-
     def attaquer_sp2(self):
-        # Code pour l'action de la deuxième attaque spéciale
+        """
+        Exécute l'action de l'attaque spéciale.
+        """
         
         if self.cb.joueur.pokemon_equipe[self.cb.combat.indice].stats['Speed'] >= self.cb.combat.pokemon_adversaire.stats['Speed']:
             self.set_dialogue_text("Vous avez été plus rapide!",temps=0.5)
@@ -707,6 +743,9 @@ class FightWindow(QDialog):
             self.set_dialogue_text(f"{message}",0.5)
        
     def defendre(self):
+        """
+        Gère le comportement du Pokémon adverse.
+        """
         if self.cb.combat.fuir_adv():
             self.set_dialogue_text(f"Le {self.cb.combat.pokemon_adversaire.name} sauvage a pris la fuite !",0.5)
             
@@ -720,19 +759,28 @@ class FightWindow(QDialog):
             self.ui.progressBar_pv.setValue(self.ui.progressBar_pv.value() - deg)
             self.set_dialogue_text(f"{message}",0.5)
 
-
-
-
     def changer_image_pok(self, numero):
+        """
+        Change l'image du Pokémon du joueur affichée à l'écran.
+        
+        :param numero: Numéro du Pokémon
+        """
         self.label_3.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/back/{numero}.png"))
         self.label_3.setScaledContents(True)
 
     def changer_image_pok_adv(self, numero):
+        """
+        Change l'image du Pokémon adverse affichée à l'écran.
+        
+        :param numero: Numéro du Pokémon
+        """
         self.label_4.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/front/{numero}.png"))
         self.label_4.setScaledContents(True)
 
     def round(self):
-       # Code pour un round de combat
+        """
+        Effectue un tour de combat, gère les actions des Pokémon et vérifie les conditions de victoire ou de défaite.
+        """
 
         self.combat_timer.stop()
         self.ui.pushButton.setEnabled(True)
@@ -768,6 +816,9 @@ class FightWindow(QDialog):
         self.display_next_text()
         
     def changer_pokemon(self):
+        """
+        Permet de changer le Pokémon actif du joueur.
+        """
         
         pokemon_nom=[]
         df = pd.read_csv("data/merged_data_fr.csv")
@@ -778,7 +829,7 @@ class FightWindow(QDialog):
         
         self.liste_numero_pok = pokemon_nom
         
-        inventaire = Inventaire(pokemon_nom)
+        inventaire = Inventaire(pokemon_nom,self.cb.combat.joueur)
         inventaire.exec_()
         self.cb.combat.indice=inventaire.index
         self.changer_image_pok(pokemon_nom[self.cb.combat.indice])
@@ -791,10 +842,12 @@ class FightWindow(QDialog):
         self.set_dialogue_text(f"Changement de Pokémon {self.cb.joueur.pokemon_equipe[self.cb.combat.indice].name} Go!")
         
         self.display_next_text()
-        
-        
+             
     def combat_gagné(self):
-         exp=vp.exp_gagne_par_niveau[self.cb.combat.pokemon_adversaire.niveau]
+         """
+         Gère les actions à effectuer lorsque le combat est gagné, y compris le gain d'expérience et l'évolution des Pokémon.
+         """
+         exp=round(vp.exp_gagne_par_niveau[self.cb.combat.pokemon_adversaire.niveau])
          ancien_nom=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].name
          monter_lvl,evolution=self.cb.combat.joueur.pokemon_equipe[self.cb.combat.indice].monter_niveau(int(exp))
 
@@ -835,9 +888,11 @@ class FightWindow(QDialog):
              self.changer_pokemon()
              self.cb.combat.joueur.ajouter_pokemon_equipe(self.cb.combat.pokemon_adversaire,self.cb.combat.indice)
              
-
-
     def changer_police(self):
+        """
+        Change la police de l'affichage du dialogue.
+        """
+
         font_id = QFontDatabase.addApplicationFont("/Users/samy/PROJET_POO_REAL/DAN_MONAT_SAMY/data/police.ttf")
     
         if font_id == -1:
@@ -851,16 +906,21 @@ class FightWindow(QDialog):
             self.ui.dialogue.setFont(font)
             self.dialogue.setStyleSheet("background-color: rgba(0, 0, 0, 0); ")
             self.ui.dialogue.setStyleSheet("background-color: rgba(0, 33, 15, 0); margin: 8px;")
-            
-            
-        
+               
     def set_dialogue_text(self, text, temps=0):
+        """
+        Ajoute un texte à la file d'attente des dialogues à afficher.
         
+        :param text: Texte du dialogue à afficher
+        :param temps: Temps avant l'affichage du prochain texte
+        """
         self.text_queue.append(text)  # Ajoute le texte à la file d'attente
         self.changer_police()
         
-    
     def display_next_text(self):
+        """
+        Affiche le prochain texte de la file d'attente des dialogues.
+        """
         if self.text_queue:
             text = self.text_queue.pop(0)  # Récupère le premier texte de la file d'attente
             self.ui.dialogue.setPlainText(text)
@@ -879,17 +939,20 @@ class FightWindow(QDialog):
             # Affiche le prochain texte après 5 secondes
             QTimer.singleShot(50000, self.display_next_text)
     
-        
-
-
 class Inventaire(QDialog):
-    def __init__(self,pokemon_liste):
+    def __init__(self,pokemon_liste,joueur):
+        """
+        Initialise la fenêtre d'inventaire avec la liste des Pokémon.
+        
+        :param pokemon_liste: Liste des Pokémon
+        :param joueur: Joueur
+        """
         super(Inventaire, self).__init__()
         loadUi("UI/inventaire.ui", self) 
         self.ui = Ui_Form2()  
         self.ui.setupUi(self)
         #self.ui.quitter.mousePressEvent = lambda event: self.close()
-
+        self.joueur=joueur
         
         self.pokemon_liste=pokemon_liste
         self.index=0
@@ -911,33 +974,32 @@ class Inventaire(QDialog):
         # fait une fonction qui change le texte de pok_pv_i par le nombre de pv qu'il a slash celui qui reste
         for i, poke_pv_attr in enumerate([self.pok_pv_1, self.pok_pv_2, self.pok_pv_3, self.pok_pv_4, self.pok_pv_5,self.pok_pv_6]):
             if i < len(pokemon_liste):
-                pokemon_name = pokemon_liste[i]
-            else:
-                pokemon_name= "ERROR"
-                
-            poke_pv_attr.setText(f"{vp.pokemon_dict[pokemon_name]['HP'][0]}/{vp.pokemon_dict[pokemon_name]['HP'][1]}")
+                poke_pv_attr.setText(f"{self.joueur.pokemon_equipe[i].stats['HP'][0]}/{self.joueur.pokemon_equipe[i].stats['HP'][1]}")
+            
         
         self.ui.poke_main.mousePressEvent = self.shift_pokemon
         
         for i, poke_img_attr in enumerate([self.ui.poke_img_1, self.ui.poke_img_2, self.ui.poke_img_3, self.ui.poke_img_4, self.ui.poke_img_5,self.ui.poke_img_6]):
             if i < len(pokemon_liste):
                 pokemon_name = pokemon_liste[i]
-            else:
-                pokemon_name= "ERROR"
+           
                 
-            # Utilisation de f-strings pour formater le chemin de l'image
-            pixmap_path = f"CODE/image tiles/pokemon_Combat/front/{pokemon_name}.png"
+                # Utilisation de f-strings pour formater le chemin de l'image
+                pixmap_path = f"CODE/image tiles/pokemon_Combat/front/{pokemon_name}.png"
+                
+                poke_img_attr.clear()
+                poke_img_attr.setPixmap(QPixmap(pixmap_path))
+                poke_img_attr.setScaledContents(True)
+                
+                # Assignation de la fonction de gestion d'événements pour le clic de souris
+                poke_img_attr.mousePressEvent = lambda event, index=i: self.on_pokemon_clicked(index)
             
-            poke_img_attr.clear()
-            poke_img_attr.setPixmap(QPixmap(pixmap_path))
-            poke_img_attr.setScaledContents(True)
-            
-            # Assignation de la fonction de gestion d'événements pour le clic de souris
-            poke_img_attr.mousePressEvent = lambda event, index=i: self.on_pokemon_clicked(index)
-        
-        
     def on_pokemon_clicked(self, index):
-        # Lorsque vous cliquez sur une image de Pokémon, mettez à jour le pixmap de l'image label correspondante
+        """
+        Met à jour l'image du Pokémon sélectionné dans l'inventaire.
+        
+        :param index: Index du Pokémon sélectionné dans la liste
+        """
         pokemon_name = self.pokemon_liste[index] #index du pokemon choisit
         self.ui.poke_main.setPixmap(QPixmap(f"CODE/image tiles/pokemon_Combat/front/{pokemon_name}.png"))
         self.ui.poke_main.setScaledContents(True)
@@ -945,12 +1007,15 @@ class Inventaire(QDialog):
         
         
     def shift_pokemon(self,event):
-        print(self.index)
-        print("j'arrive ici")
+        """
+        Ferme la fenêtre d'inventaire et sélectionne le Pokémon.
+        
+        :param event: Événement de clic
+        """
+        
+        
         self.close()
         
-        
-    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
